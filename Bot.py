@@ -159,17 +159,17 @@ import numpy as np
 from langchain_openai import OpenAIEmbeddings
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 
+from pymongo import MongoClient
+import numpy as np
+from sklearn.metrics.pairwise import cosine_similarity
+
 class Recommender():
-    def __init__(self, all_responses, domain, query):
-        self.all_responses = all_responses
+    def __init__(self, domain, query):
         self.domain = domain
         self.query = query
-    
-    def text_to_string(self, responses):
-        text = ""
-        for response in responses:
-            text = text + response + " "
-        return text
+        self.client = MongoClient("mongodb://localhost:27017/")
+        self.db = self.client["your_database_name"]
+        self.users_collection = self.db["users"]
     
     def calculate_cosine_similarity(self, embedding1, embedding2):
         # Reshape for compatibility
@@ -189,14 +189,25 @@ class Recommender():
         return nearest_neighbors
     
     def get_neighbours(self):
-        # Assuming you have vector_store and embeddings defined
-        vector_store = [embeddings.embed_query(self.text_to_string(responses)) for responses in self.all_responses]
+        # Get all users from MongoDB
+        all_users = self.users_collection.find({})
+        
+        # Create vector store and scores
+        vector_store = []
+        scores = []
+        for user in all_users:
+            vector_store.append(user["vectorEmbeddings"])
+            scores.append(user["Score"])
+        
+        # Convert to numpy arrays
+        vector_store = np.array(vector_store)
+        scores = np.array(scores)
         
         # Get the embedding of the query sentence
-        query_embedding = np.array(embeddings.embed_query(self.text_to_string(self.query)))
+        query_embedding = np.array(self.query)
 
         # Perform KNN
-        nearest_neighbors = self.knn_cosine_similarity(query_embedding, vector_store, self.all_responses, k=5)
+        nearest_neighbors = self.knn_cosine_similarity(query_embedding, vector_store, scores, k=5)
         return nearest_neighbors
 
 
