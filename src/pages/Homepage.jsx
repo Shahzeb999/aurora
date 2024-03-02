@@ -391,43 +391,7 @@ const HomeAndSkills = () => {
   return (
     <>
       <Homepage />
-      <Skills />
-      {/* contact section design */}
-      <section className="contact" id="contact">
-        <h2 className="heading">Contact <span>Me!</span></h2>
-        <div className="contact-content">
-          <div className="social-media" id="contact-socials">
-            <a href="https://www.linkedin.com/in/mohammad-adnaan-51272024a/" target="_blank" rel="noopener noreferrer"><i className='bx bxl-linkedin'></i></a>
-            <a href="https://github.com/mohd-adnaan" target="_blank" rel="noopener noreferrer"><i className='bx bxl-github'></i></a>
-            <a href="https://facebook.com/adnaan.this.side/" target="_blank" rel="noopener noreferrer"><i className='bx bxl-facebook-alt'></i></a>
-            <a href="mailto:iamadnaanmohd@gmail.com" target="_blank" rel="noopener noreferrer"><i className='bx bxl-gmail'></i></a>
-            <a href="https://www.instagram.com/adnaan.this.side/" target="_blank" rel="noopener noreferrer"><i className='bx bxl-instagram-alt'></i></a>
-          </div>
-        </div>
-        <div className="para"><p>OR</p></div>
-        <form action="https://formsubmit.co/iamadnaanmohd@gmail.com" method="POST">
-          <div className="input-box">
-            <input type="text" name="Name" placeholder="Full Name" />
-            <input type="email" name="email" placeholder="Email Address" required />
-          </div>
-          <div className="input-box">
-            <input type="number" name="Number" placeholder="Mobile Number" />
-            <input type="text" name="Subject" placeholder="Subject" />
-          </div>
-          <textarea name="Message" cols="30" rows="10" placeholder="Your Message"></textarea>
-          <input type="submit" value="Send Message" className="btn" />
-        </form>
-      </section>
-
-      {/* footer design */}
-      <footer className="footer">
-        <div className="footer-text">
-          <p>Copyright &copy; 2024 by Aurora Corporation | All Rights Reserved.</p>
-        </div>
-        <div className="footer-iconTop">
-          <a href="#home"><i className='bx bx-up-arrow-alt'></i></a>
-        </div>
-      </footer>
+      <Skills />     
     </>
   );
 };
