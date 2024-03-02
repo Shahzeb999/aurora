@@ -53,12 +53,9 @@ Interested in exploring Aurora.AI? Here's how you can get started:
 
    ```bash
      pip install -r requirements.txt
-```
+   ```
 
 
-### License 
-
-Aurora.AI is licensed under the MIT License.
 
 
     
