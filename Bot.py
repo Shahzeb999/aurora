@@ -10,12 +10,13 @@ from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import os
 
+
 load_dotenv()
 
 apikey = os.getenv("OPENAI_API_KEY")
 
 class IntervueBot(): 
-    def __init__(self,resume_path, domain): 
+    def _init_(self,resume_path, domain): 
         self.resume_path = resume_path
         self.resume_text = self.read_pdf(resume_path)
         self.llm = ChatOpenAI()
@@ -39,7 +40,7 @@ class IntervueBot():
         generated_resume_questions = resume_question_chain.invoke({"input": f"{self.resume_text}"}).content
         generated_resume_questions_list = generated_resume_questions.split('\n')
         cleaned_resume_questions_list = [q for q in generated_resume_questions_list if q.strip()]
-        return {"questions":cleaned_resume_questions_list}
+        return cleaned_resume_questions_list
     
     def validate_response(self, questions ,responses): 
 
@@ -51,32 +52,42 @@ class IntervueBot():
                                         Also, there is no need to be kind if the interviewwe answer is not upto the mark,
                                         you are totally free to deduct marks if the answer is very short, doesn\'t contain the entire details, etc.
                                         
-                                        **Note: You need to give the score and the feedback on the answer, 
-                                        also ensure that the score and feedback are seperated by demiliter \n for easy segregation.
-                                        Return the score first followed by the feedback.'''),
+                                        **Note: Follow the instruction given below while returning the rating and feedbacks. 
+                             
+                                        1. You need to give a score and the feedback on the answers 
+                                        2. Ensure that the score and feedback are seperated by demiliter \n for easy segregation.
+                                        3. Don't return the score in the format 'Score : 8/10' , just return the score as 8/10 or like that. 
+                             
+                                        4. Also, just return the score first followed by the feedback.'''),
                             ("user", "{qa_pair}")
                                 ])
 
         self.llm.invoke('Rate the candidate on a scale of 1 to 10.')
         chain = resume_answer_validator_template | self.llm 
-        avg_rating = 0
+        total_rating = 0
         feedbacks = []
+
         for question, response in zip(questions, responses):
             qa_pair = f'Question: {question} \nAnswer: {response}'
-            
-            # Assuming chain.invoke correctly processes the "qa_pair" and returns "rating\nfeedback"
             response_content = chain.invoke({"qa_pair": qa_pair}).content
-            try:
-                rating_str, feedback = response_content.split('\n', 1)  # Splitting on the first newline character
-                rating = float(rating_str)  
-                total_rating += rating
-                feedbacks.append(feedback)
-            except ValueError as e:
-                print(f"Error processing response: {e}")
-                total_rating+=5 # default case 
+            parts = response_content.split('\n', 1)
+    
+            if len(parts) == 2:
+                rating_str, feedback = parts
+            else:
+                rating_str = '0'
+                feedback = response_content
 
-        avg_rating = total_rating / len(questions) if questions else 0  # Avoid division by zero if questions list is empty
-        return avg_rating, feedbacks
+            rating = rating_str.split('/')[0]
+            floatrating = float(rating)
+            print(floatrating)
+            total_rating+=floatrating 
+            feedbacks.append(feedback)
+        avg_rating = total_rating/(len(questions))
+        return {"average_rating": avg_rating, "feedbacks" : feedbacks}
+    
+
+
         
     def generate_technical_questions(self, num_questions = 10): 
         technical_question_generation = ChatPromptTemplate.from_messages([
@@ -164,11 +175,11 @@ import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 class Recommender():
-    def __init__(self, domain, query):
+    def _init_(self, domain, query):
         self.domain = domain
         self.query = query
         self.client = MongoClient("mongodb://localhost:27017/")
-        self.db = self.client["aurora"]
+        self.db = self.client["your_database_name"]
         self.users_collection = self.db["users"]
     
     def calculate_cosine_similarity(self, embedding1, embedding2):
