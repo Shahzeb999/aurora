@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #questionSection, #evaluationSection {
+            margin-top: 20px;
+        }
+        
+        textarea {
+            width: 300px;
+            height: 100px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="uploadSection">
+        <input type="file" id="resumeInput" accept=".pdf"/>
+        <input type="text" id="domainInput" placeholder="Enter Domain"/>
+        <button onclick="uploadResume()">Upload Resume</button>
+    </div>
+
+    <div id="questionSection" style="display: none;">
+        <p id="questionText"></p>
+        <textarea id="answerInput" placeholder="Your answer"></textarea>
+        <button onclick="submitAnswer()">Submit Answer</button>
+    </div>
+
+    <div id="evaluationSection" style="display: none;">
+        <p id="evaluationText"></p>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let questions = [];
+        let answers = [];
+    
+        function uploadResume() {
+            const resumeInput = document.getElementById('resumeInput');
+            const domainInput = document.getElementById('domainInput');
+    
+            if (resumeInput.files.length == 0 || domainInput.value === "") {
+                alert("Please select a resume and enter a domain.");
+                return;
+            }
+    
+            const formData = new FormData();
+            formData.append('resume', resumeInput.files[0]);
+            formData.append('domain', domainInput.value);
+    
+            fetch('/generate_resume_questions', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                questions = data.questions;
+                document.getElementById('uploadSection').style.display = 'none';
+                document.getElementById('questionSection').style.display = 'block';
+                displayQuestion();
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    
+        function displayQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById('questionText').textContent = questions[currentQuestion];
+            } else {
+                submitAnswers();
+            }
+        }
+    
+        function submitAnswer() {
+            const answerInput = document.getElementById('answerInput');
+            answers.push(answerInput.value);
+            answerInput.value = ''; // Clear the textarea
+            currentQuestion++;
+            displayQuestion();
+        }
+    
+        function submitAnswers() {
+            document.getElementById('questionSection').style.display = 'none';
+    
+            fetch('/validate_resume_responses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({questions: questions, answers: answers}),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('evaluationSection').style.display = 'block';
+                const evaluationText = document.getElementById('evaluationText');
+                // Clear previous content
+                evaluationText.innerHTML = '';
+    
+                // Display average rating
+                const ratingPara = document.createElement('p');
+                ratingPara.textContent = `Average Rating: ${data.average_rating}`;
+                evaluationText.appendChild(ratingPara);
+    
+                // Display feedbacks
+                const feedbackList = document.createElement('ul');
+                data.feedbacks.forEach(feedback => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = feedback;
+                    feedbackList.appendChild(listItem);
+                });
+                evaluationText.appendChild(feedbackList);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+    
+</body>
+</html>
