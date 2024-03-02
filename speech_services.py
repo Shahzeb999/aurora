@@ -1,6 +1,7 @@
 # tts.py
 import os
 from openai import OpenAI
+import jsoni
 
 class TextToSpeech:
     def __init__(self, model="tts-1", voice="alloy", output_path="./audio/tts.mp3"):
@@ -19,6 +20,8 @@ class TextToSpeech:
         with open(self.output_path, "wb") as f:
             f.write(response.content)
         print(f"Audio content written to file '{self.output_path}'")
+
+        return jasonify()
     
     def play_audio(self):
         if os.path.exists(self.output_path):
