@@ -16,11 +16,13 @@ load_dotenv()
 apikey = os.getenv("OPENAI_API_KEY")
 
 class IntervueBot(): 
-    def _init_(self,resume_path, domain): 
+    def __init__(self,resume_path, domain): 
         self.resume_path = resume_path
         self.resume_text = self.read_pdf(resume_path)
         self.llm = ChatOpenAI()
         self.domain = domain 
+
+
     def read_pdf(self, resume_path):
         pdf = fitz.open(self.resume_path)
         text = ""
@@ -33,7 +35,11 @@ class IntervueBot():
 
         resume_question_template = ChatPromptTemplate.from_messages([
             ("system", f'''You are world class resume parser and an Interviewer, you are taking the interview of a candidate, your task is to generate {num_questions} highly intellectual questions from his resume given below, the question should be general as these will be based on the resume.
-             *Note  : you need to seperate each question with the help of delimiter \n so that I can segregate the questions into a list.'''),
+             
+             *Note  : 1.  you need to seperate each question with the help of delimiter \n so that I can segregate the questions into a list.
+             2. ask him questions on the basis of his resume and not too technical questions. 
+             3. the questions should be based to jusdge the communications skills, problem solving skills of the candidate. 
+             '''),
             ("user", "{input}")
         ])
         resume_question_chain = resume_question_template | self.llm
@@ -57,7 +63,6 @@ class IntervueBot():
                                         1. You need to give a score and the feedback on the answers 
                                         2. Ensure that the score and feedback are seperated by demiliter \n for easy segregation.
                                         3. Don't return the score in the format 'Score : 8/10' , just return the score as 8/10 or like that. 
-                             
                                         4. Also, just return the score first followed by the feedback.'''),
                             ("user", "{qa_pair}")
                                 ])
@@ -110,7 +115,10 @@ class IntervueBot():
                                     Objective:
                                     Generate 10-15 in-depth technical questions that span the entire resume, ensuring a broad examination of the candidate's technical capabilities and achievements in machine learning
                                 
-                                    Note : Only generate the question and do not give any headings, seperate text, etc apart from the questions. 
+                                    *Note  :
+                                    1. you need to seperate each question with the help of delimiter \n so that I can segregate the questions into a list.
+                                    2. the questions need to be strictly technical like related to the technologies, techniques, concepts the person have used in their projects, work experience, etc. 
+                                    3. the questions need to be strictly related to the domain of the person. 
                                     
                                 '''),
                     ("user", "{resume_text}")
@@ -118,7 +126,7 @@ class IntervueBot():
         tech_que_chain = technical_question_generation | self.llm 
         tech_questions = tech_que_chain.invoke({'resume_text': f"{self.resume_text}"}).content.split('\n')
         cleaned_tech_questions = [q for q in tech_questions if q.strip()]
-        return cleaned_tech_questions
+        return {"questions":cleaned_tech_questions}
     
 
     def validate_technical_answers(self,questions, answers):
@@ -133,37 +141,38 @@ class IntervueBot():
                         - Determine if the response reflects the candidate's technical proficiency and depth in {self.domain} and related fields.
                         - Provide a validation score or feedback on the candidate's response.
                         
-                        Note: Only provide the validation score, feedback both seperated by a \n for easy segregation 
+                        Note: 
+                        1. Only provide the validation score, feedback both seperated by a \n for easy segregation 
                         and avoid adding any extraneous content.
+                        2. for the score, return just the score like this : '8/10', seperated by the feedback using delimiter. Do not need to give the score like this : 'Score : 8/10', feedback:  ..... .
+                        3. follow the above guidelines while returning the scores.   
                     '''),
             ("user", "{qa_pair}")
         ])
 
         chain = response_validation_template | self.llm
         total_rating = 0
-        tech_feedbacks = []
+        feedbacks = []
 
-        for question, answer in zip(questions, answers):
-            tech_qa_pair = f'Question: {question} Response: {answer}'
-            response_content = chain.invoke({'qa_pair': tech_qa_pair}).content
-            try:
-                rating_technical_str, feedback_technical = response_content.split('\n', 1)
-                rating_technical = float(rating_technical_str)  # Convert rating to float
-                total_rating += rating_technical
-                tech_feedbacks.append(feedback_technical)
-            except ValueError as e:
-                print(f"Error processing response: {e}")
-                total_rating+=5 # default rating in this case....
-
-
-        # Ensuring we don't divide by zero
-        if questions:
-            avg_tech_rating = total_rating / len(questions)
-        else:
-            avg_tech_rating = 0
-
-        return avg_tech_rating, tech_feedbacks
+        for question, response in zip(questions, answers):
+            qa_pair = f'Question: {question} \nAnswer: {response}'
+            response_content = chain.invoke({"qa_pair": qa_pair}).content
+            parts = response_content.split('\n', 1)
     
+            if len(parts) == 2:
+                rating_str, feedback = parts
+            else:
+                rating_str = '0'
+                feedback = response_content
+
+            rating = rating_str.split('/')[0]
+            floatrating = float(rating)
+            print(floatrating)
+            total_rating+=floatrating 
+            feedbacks.append(feedback)
+        avg_rating = total_rating/(len(questions))
+        return {"average_rating": avg_rating, "feedbacks" : feedbacks}
+        
 
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
