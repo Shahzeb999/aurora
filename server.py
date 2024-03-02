@@ -19,7 +19,14 @@ app = Flask(__name__)
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
     text_2_speech = TextToSpeech()
-    
+    audio_path = text_2_speech.generate_speech(request.get_json().get('text'))
+    return audio_path
+
+@app.route("/transcribe", methods=['POST'])
+def transcribe():
+    transcriber = AudioTranscriber()
+    text = transcriber.transcribe_audio(request.get_json().get("audio_path"))
+    return text
 
 @app.route('/generate_resume_questions',methods=['POST'])
 def generate_questions():
