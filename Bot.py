@@ -39,7 +39,7 @@ class IntervueBot():
         generated_resume_questions = resume_question_chain.invoke({"input": f"{self.resume_text}"}).content
         generated_resume_questions_list = generated_resume_questions.split('\n')
         cleaned_resume_questions_list = [q for q in generated_resume_questions_list if q.strip()]
-        return cleaned_resume_questions_list
+        return {"questions":cleaned_resume_questions_list}
     
     def validate_response(self, questions ,responses): 
 

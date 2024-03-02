@@ -1,20 +1,18 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from Bot import IntervueBot
 from speech_services import TextToSpeech, AudioTranscriber
 global bot
 global text_2_speech
 global transcriber
+import os
+import tempfile
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# @app.route('/hi', methods=['POST'])
-# def hello(): 
-#     try:
-#         data = request.get_json()
-#         text = data.get('text', 'default text')  # Using .get to provide a default value if 'text' is not present
-#         return jsonify({"message": f'hi this is working {text}'})  # Correctly returning a JSON response
-#     except Exception as e:
-#         return jsonify({"error": str(e)}), 400  # Return a JSON error message
+@app.route('/', methods=['POST','GET'])
+def hello():
+    return render_template('index.html')
 
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
@@ -30,23 +28,36 @@ def transcribe():
 
 @app.route('/generate_resume_questions',methods=['POST'])
 def generate_questions():
-    data = request.get_json()  # This line parses the JSON data from the request
-    if not data:
-        return "No JSON data found", 400
-    resume_path = data.get('resume_path')
-    domain = data.get('domain')
-    bot = IntervueBot(resume_path, domain)
+    if 'resume' not in request.files:
+        return jsonify({"error": "No resume file provided"}), 400
+    file = request.files['resume']
+    domain = request.form.get('domain', 'default_domain')
+
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    # Use tempfile to get the temporary directory
+    temp_dir = tempfile.gettempdir()
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(temp_dir, filename)  # Cross-platform path handling
+    file.save(file_path)
+
+    # Initialize your bot and generate questions
+    global bot
+    bot = IntervueBot(file_path, domain)
     questions = bot.generate_questions_from_resume()
 
-    return questions
+    # Clean up
+    # os.remove(file_path)
+
+    return jsonify(questions)
 
 @app.route('/generate_tech_questions',methods = ['POST'])
 def generate_tech_questions(): 
     data = request.get_json()
     if not data: 
         return "No JSON data found", 400 
-    resume_path = data.get('resume_path')
-    domain = data.get('domain')
+
     tech_questions = bot.generate_technical_questions()
     return tech_questions 
 
@@ -55,11 +66,10 @@ def validate_answers_on_resume():
     data = request.get_json()
     if not data : 
         return "No JSON data found", 400 
-    resume_path = data.get('resume_path')
-    domain = data.get('domain')
+
     questions = data.get('questions')
     answers = data.get('answers')
-
+    
     results = bot.validate_response(questions,answers)
     return jsonify(results)
 
@@ -70,7 +80,7 @@ def validate_technical_responses():
         return "No JSON data found", 400
     questions = data.get('questions')
     answers = data.get('answers')
-
+    
     results = bot.validate_technical_answers(questions,answers)
     return jsonify(results)
 
