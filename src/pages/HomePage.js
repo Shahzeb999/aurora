@@ -19,8 +19,8 @@ const HomePage = () => {
         initial="hidden"
         animate="visible"
       >
-        <h1>Welcome to Our Homepage</h1>
-        <p>This is the starting point of our amazing React application.</p>
+        <h1>Welcome to Aurora.ai</h1>
+        <p>An AI powered interview and feedback platform.</p>
         <motion.button
           style={{
             marginTop: '20px',

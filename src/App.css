@@ -1,39 +1,133 @@
 .App {
-  text-align: center;
+  font-family: 'Arial', sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #fff;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.1);
 }
 
+.logo {
+  font-weight: bold;
+  font-size: 2rem;
+  color: #5c6bc0; /* or any color that represents the 'M' logo */
+}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.nav-items a {
+  text-decoration: none;
+  color: #333;
+  margin-left: 1rem;
+}
+
+.apply-link {
+  color: #5c6bc0;
+  font-weight: bold;
+  margin-left: 2rem;
+}
+
+.announcement-bar {
+  background-color: #f8f9fa;
+  color: #333;
+  padding: 0.5rem 2rem;
+  font-size: 0.875rem;
+}
+
+.announcement-bar a {
+  text-decoration: none;
+  color: #5c6bc0;
+  font-weight: bold;
 }
 
 .App-header {
-  background-color: #e8f0f8;
-  min-height: 100vh;
+  text-align: center;
+  padding: 5rem 2rem;
+  background: linear-gradient(to right, #8e9eab, #eef2f3);
+  color: #333;
+}
+
+.header-subtext {
+  margin: 1rem 0 2rem;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.cta-buttons {
   display: flex;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: black;
+  gap: 1rem;
+  margin-top: 2rem;
 }
 
-.App-link {
-  color: #61dafb;
+.cta-primary, .cta-secondary {
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 2rem;
+  font-weight: bold;
+  cursor: pointer;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.cta-primary {
+  background-color: #5c6bc0;
+  color: #fff;
+}
+
+.cta-secondary {
+  background-color: transparent;
+  color: #5c6bc0;
+  border: 2px solid #5c6bc0;
+}
+
+/* Add media queries for responsiveness */
+@media (max-width: 768px) {
+  .App-nav, .announcement-bar {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  to {
-    transform: rotate(360deg);
+
+  .nav-items {
+    padding-top: 1rem;
   }
+
+  .cta-buttons {
+    flex-direction: column;
+  }
+
+  .cta-secondary {
+    margin-top: 1rem;
+  }
+}
+
+.main-content {
+  padding: 4rem 2rem;
+  background-color: #f8f9fa;
+}
+
+.feature {
+  margin: 2rem 0;
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.feature:hover {
+  transform: translateY(-5px);
+}
+
+.feature h2 {
+  color: #5c6bc0;
+  margin-bottom: 1rem;
+}
+
+.App-footer {
+  background-color: #282c34;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
 }

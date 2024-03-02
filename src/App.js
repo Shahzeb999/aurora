@@ -1,44 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage.js";
-import logo from "./Aurora.png";
-import { AnimatePresence, motion } from "framer-motion";
+import React from 'react';
+import NavBar from './pages/NavBar';
+import AnnouncementBar from './pages/AnnouncementBar';
+import Header from './pages/Header';
+import Feature from './pages/Feature';
+import Footer from './pages/Footer';
+import './App.css';
 
 function App() {
-  const [showLogo, setShowLogo] = useState(true);
-  const [logoAnimationComplete, setLogoAnimationComplete] = useState(false);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLogo(false);
-      setLogoAnimationComplete(true);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
-    <BrowserRouter>
-      <div className="App">
-        <header className="App-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh' }}>
-          <AnimatePresence>
-            {showLogo && (
-              <motion.img
-                src={logo}
-                alt="Aurora Logo"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1, ease: "easeInOut" }}
-                style={{ width: '150px', height: 'auto' }} 
-              />
-            )}
-          </AnimatePresence>
-        </header>
-        <Routes>
-          {logoAnimationComplete && <Route path="/" element={<HomePage />} />}
-        </Routes>
-      </div>
-    </BrowserRouter>
+    <div className="App">
+      <NavBar />
+      <AnnouncementBar />
+      <Header />
+      <main className="main-content">
+        <Feature 
+          title="Seamless Integration" 
+          description="Integrate Aurora seamlessly with your existing HR systems for a smooth workflow."
+        />
+        <Feature 
+          title="Intelligent Matching" 
+          description="Our AI-powered bot evaluates candidates to match them with the perfect opportunities."
+        />
+        <Feature 
+          title="Analytics Dashboard" 
+          description="Get insights into your hiring process with our comprehensive analytics dashboard."
+        />
+      </main>
+      <Footer />
+    </div>
   );
 }
 
