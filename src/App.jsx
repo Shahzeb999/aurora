@@ -7,7 +7,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
 import Contact from "./pages/Contact";
-import Schedule from "./pages/Schedule";
+import Demo from "./pages/Demo";
 import Work from "./pages/Work";
 import Navbar from "./components/Navbar/Navbar";
 
@@ -20,7 +20,7 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Homepage />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/team" element={<Team/>}/>
-        <Route path="/schedule" element={<Schedule/>} />
+        <Route path="/demo" element={<Demo/>} />
         <Route path="/work" element={<Work/>}/>
       </Routes>
     </AnimatePresence>
