@@ -10,7 +10,6 @@ from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
 import os
 
-
 load_dotenv()
 
 apikey = os.getenv("OPENAI_API_KEY")
@@ -52,42 +51,32 @@ class IntervueBot():
                                         Also, there is no need to be kind if the interviewwe answer is not upto the mark,
                                         you are totally free to deduct marks if the answer is very short, doesn\'t contain the entire details, etc.
                                         
-                                        **Note: Follow the instruction given below while returning the rating and feedbacks. 
-                             
-                                        1. You need to give a score and the feedback on the answers 
-                                        2. Ensure that the score and feedback are seperated by demiliter \n for easy segregation.
-                                        3. Don't return the score in the format 'Score : 8/10' , just return the score as 8/10 or like that. 
-                             
-                                        4. Also, just return the score first followed by the feedback.'''),
+                                        **Note: You need to give the score and the feedback on the answer, 
+                                        also ensure that the score and feedback are seperated by demiliter \n for easy segregation.
+                                        Return the score first followed by the feedback.'''),
                             ("user", "{qa_pair}")
                                 ])
 
         self.llm.invoke('Rate the candidate on a scale of 1 to 10.')
         chain = resume_answer_validator_template | self.llm 
-        total_rating = 0
+        avg_rating = 0
         feedbacks = []
-
         for question, response in zip(questions, responses):
             qa_pair = f'Question: {question} \nAnswer: {response}'
+            
+            # Assuming chain.invoke correctly processes the "qa_pair" and returns "rating\nfeedback"
             response_content = chain.invoke({"qa_pair": qa_pair}).content
-            parts = response_content.split('\n', 1)
-    
-            if len(parts) == 2:
-                rating_str, feedback = parts
-            else:
-                rating_str = '0'
-                feedback = response_content
+            try:
+                rating_str, feedback = response_content.split('\n', 1)  # Splitting on the first newline character
+                rating = float(rating_str)  
+                total_rating += rating
+                feedbacks.append(feedback)
+            except ValueError as e:
+                print(f"Error processing response: {e}")
+                total_rating+=5 # default case 
 
-            rating = rating_str.split('/')[0]
-            floatrating = float(rating)
-            print(floatrating)
-            total_rating+=floatrating 
-            feedbacks.append(feedback)
-        avg_rating = total_rating/(len(questions))
-        return {"average_rating": avg_rating, "feedbacks" : feedbacks}
-    
-
-
+        avg_rating = total_rating / len(questions) if questions else 0  # Avoid division by zero if questions list is empty
+        return avg_rating, feedbacks
         
     def generate_technical_questions(self, num_questions = 10): 
         technical_question_generation = ChatPromptTemplate.from_messages([
@@ -179,7 +168,7 @@ class Recommender():
         self.domain = domain
         self.query = query
         self.client = MongoClient("mongodb://localhost:27017/")
-        self.db = self.client["your_database_name"]
+        self.db = self.client["aurora"]
         self.users_collection = self.db["users"]
     
     def calculate_cosine_similarity(self, embedding1, embedding2):
