@@ -198,11 +198,11 @@ const Homepage = () => {
                 Hire a team
               </PrimaryButton>
               <PrimaryButton
-                onClick={() => handleNavigate('/schedule')} 
+                onClick={() => handleNavigate('/demo')} 
                 theme={secondary}
                 mt={4}
               >
-                Book a meeting
+                Take a Demo
               </PrimaryButton>
             </Flex>
           </Box>

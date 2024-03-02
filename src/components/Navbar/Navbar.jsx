@@ -29,21 +29,20 @@ const Navbar = props => {
       name: "Home",
       link: "",
     },
-
     {
-      name : "Schedule",
-      link : "schedule",
+      name: "Work",
+      link: "work",
     },
-
+    {
+      name : "Demo",
+      link : "demo"
+    },
     {
       name: "Team",
       link:"team",
     },
 
-    {
-      name: "Work",
-      link: "work",
-    },
+    
   ];
 
   return (
