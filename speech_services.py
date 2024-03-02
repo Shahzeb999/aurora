@@ -19,6 +19,8 @@ class TextToSpeech:
         with open(self.output_path, "wb") as f:
             f.write(response.content)
         print(f"Audio content written to file '{self.output_path}'")
+
+        return {"audio path":self.output_path}
     
     def play_audio(self):
         if os.path.exists(self.output_path):
@@ -39,7 +41,7 @@ class AudioTranscriber:
                 model=self.model,
                 file=audio_file
             )
-        return transcription.text
+        return {"text":transcription.text}
 
 
 
