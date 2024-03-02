@@ -154,3 +154,61 @@ class IntervueBot():
         return avg_tech_rating, tech_feedbacks
     
 
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
+from langchain_openai import OpenAIEmbeddings
+embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+
+class Recommender():
+    def __init__(self, all_responses, domain, query):
+        self.all_responses = all_responses
+        self.domain = domain
+        self.query = query
+    
+    def text_to_string(self, responses):
+        text = ""
+        for response in responses:
+            text = text + response + " "
+        return text
+    
+    def calculate_cosine_similarity(self, embedding1, embedding2):
+        # Reshape for compatibility
+        embedding1 = embedding1.reshape(1, -1)
+        embedding2 = embedding2.reshape(1, -1)
+        return cosine_similarity(embedding1, embedding2)[0][0]
+    
+    def knn_cosine_similarity(self, query_embedding, sentence_embeddings, sentences, k=5):
+        similarities = [
+            (sentences[i], self.calculate_cosine_similarity(query_embedding, np.array(sentence_embedding)))
+            for i, sentence_embedding in enumerate(sentence_embeddings)
+        ]
+        # Sort by similarity
+        similarities.sort(key=lambda x: x[1], reverse=True)
+        # Get top k
+        nearest_neighbors = similarities[:k]
+        return nearest_neighbors
+    
+    def get_neighbours(self):
+        # Assuming you have vector_store and embeddings defined
+        vector_store = [embeddings.embed_query(self.text_to_string(responses)) for responses in self.all_responses]
+        
+        # Get the embedding of the query sentence
+        query_embedding = np.array(embeddings.embed_query(self.text_to_string(self.query)))
+
+        # Perform KNN
+        nearest_neighbors = self.knn_cosine_similarity(query_embedding, vector_store, self.all_responses, k=5)
+        return nearest_neighbors
+
+
+# # Instantiate the Recommender
+# recommender = Recommender(all_responses, domain, query)
+
+# # Get the nearest neighbors
+# nearest_neighbors = recommender.get_neighbours()
+
+# # Print the nearest neighbors
+# print("Query Sentence:")
+# print(query)
+# print("\nNearest Neighbors:")
+# for neighbor in nearest_neighbors:
+#     print(neighbor[0], " - Similarity:", neighbor[1])
