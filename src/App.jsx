@@ -2,11 +2,9 @@ import React from "react";
 import { Container } from "@chakra-ui/react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { ChakraProvider } from '@chakra-ui/react';
 
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
-import Contact from "./pages/Contact";
 import Demo from "./pages/Demo";
 import Work from "./pages/Work";
 import Navbar from "./components/Navbar/Navbar";
@@ -18,7 +16,6 @@ const AnimatedRoutes = () => {
     <AnimatePresence exitBeforeEnter mode={"wait"}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Homepage />} />
-        <Route path="/contact" element={<Contact />} />
         <Route path="/team" element={<Team/>}/>
         <Route path="/demo" element={<Demo/>} />
         <Route path="/work" element={<Work/>}/>

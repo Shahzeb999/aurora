@@ -1,11 +1,8 @@
 import React from "react";
-
 import { motion } from "framer-motion";
 import { Box, Flex } from "@chakra-ui/react";
-
 import SectionHeader from "../components/miscellaneous/SectionHeader";
 import ProjectsList from "../utils/ProjectsList";
-
 import { ProjectCard, ProjectInfoCard } from "../components/ProjectCard";
 import { Heading2 } from "../components/Typography/index";
 
@@ -27,27 +24,27 @@ const Projects = ({ ...props }) => {
         {...props}
         px={{ base: "0", md: "20", xl: "0" }}
       >
-        <Box mb="128px">
-          <SectionHeader mr="16px">
-            <Heading2>Projects</Heading2>
+        <Box mb="32px">
+          <SectionHeader mr="8px">
+            <Heading2>Team</Heading2>
           </SectionHeader>
         </Box>
         {ProjectsList.map((project, id) => (
           <Flex
             mx="auto"
-            flexDirection={{ base: "column", xl: "row" }}
-            w="100%"
+            flexDirection={{ base: "column", xl: "row" }} 
+            w="60%" 
             p={{ md: "2em", lg: "3em" }}
             rounded="8px"
             key={id}
             boxShadow={{ md: "0 0 0 2px" }}
-            alignItems={{ base: "center", xl: "unset" }}
-            justify="left"
+            alignItems={{ base: "center", xl: "right" }}
+            justify="center"
             spacing={4}
-            mb="100px"
+            mb="80px"
           >
-            <ProjectCard media={project.media} w="100%" />
-            <ProjectInfoCard length={project.length} {...project} />
+            <ProjectCard media={project.media} w="50%" /> 
+            <ProjectInfoCard length={project.length} {...project} w="50%" /> 
           </Flex>
         ))}
       </Box>
