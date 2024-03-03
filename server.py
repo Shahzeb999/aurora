@@ -22,13 +22,10 @@ def upload_resume():
 def hello():
     return render_template('index.html')
 
-<<<<<<< HEAD
-=======
 @app.route('/demo')
 def demo():
     return render_template('demo.html')
 
->>>>>>> 91239231bb296bd8fe49e8dfdbbc365c682c38ee
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
     print("Generate Speech called")
