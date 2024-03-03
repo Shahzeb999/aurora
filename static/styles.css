@@ -1,0 +1,63 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #4355c0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center align the content horizontally */
+  align-items: center; /* Center align the content vertically */
+  flex-direction: column; /* Align items vertically */
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.btn-container {
+  display: flex; /* Use flexbox */
+}
+
+.btn {
+  margin: 0 10px; /* Adjust margin between buttons */
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: #4355c0;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
+
+.logo {
+  width: 50px; /* Adjust the width of the logo as needed */
+  height: auto;
+  position: absolute; /* Position the logo absolutely */
+  top: 20px; /* Adjust the top position */
+  left: 20px; /* Adjust the left position */
+}
+button {
+  background-color: #0077cc; /* Ocean blue */
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 20px; /* Make the buttons round */
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #005faa; /* Darker shade of ocean blue on hover */
+}

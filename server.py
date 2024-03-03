@@ -16,7 +16,9 @@ app = Flask(__name__)
 def hello():
     return render_template('index.html')
 
-
+@app.route('/demo')
+def demo():
+    return render_template('demo.html')
 
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
@@ -115,8 +117,9 @@ def provide_summary():
         return "No JSON data found", 400
     tech_score = data['tech_score']
     resume_score = data['resume_score']
-    feedbacks = data['feedback']
-    summary = bot.generate_summary_about_candidate(tech_score, resume_score, feedbacks)
+    tech_feedbacks = data['tech_feedbacks']
+    resume_feedback = data['resume_feedbacks']
+    summary = bot.generate_summary_about_candidate(tech_score, resume_score, tech_feedbacks, resume_feedback)
     return jsonify(summary)
 
 

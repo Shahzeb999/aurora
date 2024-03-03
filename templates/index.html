@@ -1,340 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Interview Bot</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        margin: 20px;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-      }
-
-      #uploadSection,
-      #questionSection,
-      #evaluationSection,
-      #videoSection {
-        margin-top: 20px;
-        text-align: center;
-      }
-
-      #resumeInput,
-      #domainInput {
-        margin-bottom: 10px;
-      }
-
-      textarea {
-        width: 300px;
-        height: 100px;
-        margin-top: 10px;
-        resize: none;
-      }
-
-      button {
-        background-color: #4caf50;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        cursor: pointer;
-        border-radius: 5px;
-      }
-
-      button:hover {
-        background-color: #45a049;
-      }
-
-      video {
-        width: 300px;
-        height: auto;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div id="uploadSection">
-      <input type="file" id="resumeInput" accept=".pdf" />
-      <input type="text" id="domainInput" placeholder="Enter Domain" />
-      <button onclick="uploadResume()">Upload Resume</button>
+<head>
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Interview Bot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="{{ url_for('static', filename='aurora.jpg') }}" alt="Aurora.AI" class="logo">
     </div>
-
-    <div id="videoSection" style="display: none">
-      <video id="video" autoplay></video>
+    <div class="body">
+      <h1>Welcome to AI Interview Bot</h1>
+      <p class="description">AI Interview Bot is an application that helps you with interview preparation and resume reviewing. Whether you're a job seeker looking to ace your next interview or an employer seeking to streamline the recruitment process, our application has you covered.</p>
     </div>
-
-    <div id="questionSection" style="display: none">
-      <p id="questionText"></p>
-      <textarea id="answerInput" placeholder="Your answer"></textarea>
-      <button onclick="startListening()">Start Listening</button>
-      <button onclick="submitAnswer()">Submit Answer</button>
+    <div class="btn-container">
+      <a href="#" class="btn" onclick="takeDemo()">Take Demo</a>
+      <a href="#" class="btn" onclick="reviewResume()">Resume Reviewer</a>
     </div>
-
-    <div id="evaluationSection" style="display: none">
-      <p id="evaluationText"></p>
+    <div class="extra-content">
+      <h2>Features:</h2>
+      <ul>
+        <li>Interactive interviews</li>
+        <li>Resume reviewing with detailed feedback</li>
+        <li>Customizable interview questions</li>
+        <li>Speech based question answering</li>
+      </ul>
     </div>
+  </div>
+  <script>
+    function takeDemo() {
+      // Redirect to the demo page
+      window.location.href = "./demo";
+    }
 
-    <script>
-      let currentQuestion = 0;
-      let resume_questions = [];
-      let tech_questions = [];
-      let answers = [];
-      let feedbacks = {}; // Declare the feedbacks object
-      let res_val = 0;
-      const formData = new FormData();
+    function reviewResume() {
+      // Redirect to the resume reviewer page
+      //window.location.href = "resume_reviewer.html";
+      alert("Coming soon")
+    }
 
-      let recognition;
-      let isListening = false;
-
-      function startListening() {
-        const answerInput = document.getElementById("answerInput");
-
-        if (!("webkitSpeechRecognition" in window)) {
-          alert("Speech recognition is not supported by your browser.");
-          return;
-        }
-
-        recognition = new webkitSpeechRecognition();
-        recognition.continuous = true; // Keep listening even if the user pauses
-        recognition.interimResults = false;
-
-        recognition.onstart = function () {
-          console.log("Speech recognition started. Speak into the microphone.");
-          isListening = true;
-        };
-
-        setTimeout(function () {
-          if (isListening) {
-            console.log("Speech recognition stopped due to timeout.");
-            recognition.stop();
-            // Once recognition stops, submit the answer and prepare for the next question
-          }
-        }, 120000); // 2 minutes
-
-        recognition.onresult = function (event) {
-          const result = event.results[event.results.length - 1][0].transcript;
-          console.log("Recognized: ", result);
-          answerInput.value += result + " ";
-        };
-
-        recognition.onerror = function (event) {
-          console.error("Speech recognition error: ", event.error);
-        };
-
-        recognition.onend = function () {
-          console.log("Speech recognition ended.");
-          isListening = false;
-        };
-
-        recognition.start();
-      }
-
-      function uploadResume() {
-        const resumeInput = document.getElementById("resumeInput");
-        const domainInput = document.getElementById("domainInput");
-      
-        if (resumeInput.files.length == 0 || domainInput.value === "") {
-          alert("Please select a resume and enter a domain.");
-          return;
-        }
-      
-        formData.append("resume", resumeInput.files[0]);
-        formData.append("domain", domainInput.value);
-      
-        // Call the function to start displaying video
-        startVideo();
-      
-        fetch("/generate_resume_questions", {
-          method: "POST",
-          body: formData,
-        })
-          .then(response => response.json())
-          .then(data => {
-            resume_questions = data.questions;
-            document.getElementById("uploadSection").style.display = "none";
-            document.getElementById("videoSection").style.display = "block"; // Display video section
-            document.getElementById("questionSection").style.display = "block";
-            displayQuestion();
-          })
-          .catch(error => console.error("Error:", error));
-      }
-      
-
-      function displayQuestion() {
-        if (currentQuestion < resume_questions.length) {
-          const questiontext = resume_questions[currentQuestion];
-          document.getElementById("questionText").textContent = questiontext;
-          generateAndPlaySpeech(questiontext);
-        } else {
-          submitAnswers(); // Handle the submission or transition to the next phase
-        }
-      }
-
-      function submitAnswer() {
-        if (recognition && isListening) {
-          recognition.stop();
-        }
-        const answerInput = document.getElementById("answerInput");
-        answers.push(answerInput.value);
-        answerInput.value = ""; // Clear the textarea
-        currentQuestion++;
-
-        if (res_val == 0) {
-          displayQuestion();
-        } else {
-          displayTechQuestion();
-        }
-      }
-
-      function submitAnswers() {
-        res_val = 1;
-        document.getElementById("questionSection").style.display = "none";
-
-        fetch("/validate_resume_responses", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            questions: resume_questions,
-            answers: answers,
-          }),
-        })
-          .then(response => response.json())
-          .then(data => {
-            feedbacks.resume_feedbacks = data.feedbacks; // Save feedbacks
-            feedbacks.resume_score = data.average_rating;
-            // Instead of displaying feedbacks, move on to generating tech questions
-            generateTechnicalQuestions();
-          })
-          .catch(error => console.error("Error:", error));
-      }
-
-      function generateTechnicalQuestions() {
-        fetch("/generate_tech_questions", {
-          method: "POST",
-          body: formData,
-        })
-          .then(response => response.json())
-          .then(data => {
-            tech_questions = data.questions;
-            document.getElementById("videoSection").style.display = "none"; // Hide video section
-            document.getElementById("evaluationSection").style.display = "none"; // Hide evaluation section
-            document.getElementById("questionSection").style.display = "block"; // Display tech questions section
-            currentQuestion = 0; // Reset current question index
-            displayTechQuestion(); // Display first tech question
-          })
-          .catch(error => console.error("Error:", error));
-      }
-
-      function displayTechQuestion() {
-        if (currentQuestion < tech_questions.length) {
-          const questionText = tech_questions[currentQuestion];
-          document.getElementById("questionText").textContent = questionText;
-
-          // Call the speech function with the current question
-          generateAndPlaySpeech(questionText);
-          currentQuestion++; // Move to the next question for the next button click
-        } else {
-          // All tech questions answered, move on to tech feedback or reset
-          // submitTechAnswers(); // Uncomment or implement this function as needed
-          console.log("All questions have been presented.");
-          submitTechAnswers(); 
-        }
-      }
-
-      async function generateAndPlaySpeech(text_to_speak, callback) {
-        try {
-          const response = await fetch("/generate_speech", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ text: text_to_speak }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const blob = await response.blob();
-          const audioURL = URL.createObjectURL(blob);
-          const audio = new Audio(audioURL);
-          // Setup callback to start listening after speech ends
-          audio.play();
-        } catch (error) {
-          console.error("Error generating or playing speech:", error);
-        }
-      }
-
-      function submitTechAnswers() {
-        document.getElementById("questionSection").style.display = "none";
-      
-        fetch("/validate_technical_responses", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ questions: tech_questions, answers: answers }),
-        })
-          .then(response => response.json())
-          .then(data => {
-            feedbacks.tech_feedbacks = data.feedbacks;
-            feedbacks.tech_score = data.average_rating; // Corrected assignment
-      
-            // Now, generate a summary about the candidate's interview
-            fetch("/provide_summary_about_the_interview", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                tech_score: feedbacks.tech_score,
-                resume_score: feedbacks.resume_score,
-                feedback: feedbacks.tech_feedbacks, // Using technical feedbacks here
-              }),
-            })
-              .then(response => response.json())
-              .then(summary => {
-                // Process the generated summary as needed
-                document.getElementById("evaluationText").textContent = "Summary: " + JSON.stringify(summary);
-                document.getElementById("evaluationSection").style.display = "block"; // Display the evaluation section
-                console.log("Summary generated:", summary);
-              })
-              .catch(error => console.error("Error generating summary:", error));
-          })
-          .catch(error => console.error("Error:", error));
-      }
-      
-      // Function to start displaying video
-      function startVideo() {
-        const video = document.getElementById("video");
-
-        // Check if user's browser supports accessing media devices
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          alert("Your browser doesn't support accessing the camera.");
-          return;
-        }
-
-        // Access the user's camera and stream the video feed
-        navigator.mediaDevices
-          .getUserMedia({ video: true })
-          .then(function (stream) {
-            video.srcObject = stream;
-            document.getElementById("videoSection").style.display = "block"; // Display the video section
-          })
-          .catch(function (error) {
-            console.error("Error accessing the camera:", error);
-            alert("Error accessing the camera. Please check your camera settings.");
-          });
-      }
-
-      // Call the function to start displaying video when the page loads
-      //window.onload = function () {
-        //startVideo();
-      //};
-    </script>
-  </body>
+    // JavaScript effect to highlight the features list
+    const featureList = document.querySelector('.extra-content ul');
+    featureList.addEventListener('mouseover', function() {
+      this.classList.add('highlight');
+    });
+    featureList.addEventListener('mouseout', function() {
+      this.classList.remove('highlight');
+    });
+  </script>
+</body>
 </html>

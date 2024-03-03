@@ -200,14 +200,15 @@ class IntervueBot():
         resume_feedbacks_list = [f for f in resume_feedbacks if f.strip()]
         return {"feedbacks":resume_feedbacks_list}
 
-    def generate_summary_about_candidate(self, tech_score, resume_score, feedbacks):
+    def generate_summary_about_candidate(self, tech_score, resume_score, tech_feedbacks, resume_feedbacks):
         summary_template = ChatPromptTemplate.from_messages([
             ("system", f'''You are a world class hiring professional, your team has recently interviewed a candidate and they have provided the following feedback about the candidate, it contains his score on the basis of his resume, on the basis of his technical proficiency, and his feedbacks on the type of answers that he gave. Your task is to provide a summary based on these scores and feedback in 3-4 lines highlighting the candidates, strength, weakness, expertise, etc.
               
             Given the feedback from your hiring team about the candidate:\n\n
                         f"His technical Score: {tech_score}\n
                         f"His resume Score: {resume_score}\n
-                        "his response feedbacks:\n{feedbacks}
+                        "his response feedbacks on technical questions:\n{tech_feedbacks}\n
+                        "his responce feedbacks on resume questions:\n{resume_feedbacks}
             **Note :
             1. provide the summary only and do not include any extra unnecessary text. 
             2. Ensure that the summary you are providing is not more than 4 lines. 
