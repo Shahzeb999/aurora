@@ -81,32 +81,32 @@
       function startListening() {
         const answerInput = document.getElementById("answerInput");
 
-        // Check if browser supports speech recognition
         if (!("webkitSpeechRecognition" in window)) {
           alert("Speech recognition is not supported by your browser.");
           return;
         }
 
         recognition = new webkitSpeechRecognition();
-        recognition.continuous = false;
+        recognition.continuous = true; // Keep listening even if the user pauses
         recognition.interimResults = false;
 
         recognition.onstart = function () {
           console.log("Speech recognition started. Speak into the microphone.");
           isListening = true;
-          // Set a timeout to stop listening after 30 seconds
-          setTimeout(function () {
-            if (isListening) {
-              console.log("Speech recognition stopped due to timeout.");
-              recognition.stop();
-            }
-          }, 30000); // 30 seconds timeout
         };
 
+        setTimeout(function () {
+          if (isListening) {
+            console.log("Speech recognition stopped due to timeout.");
+            recognition.stop();
+            // Once recognition stops, submit the answer and prepare for the next question
+          }
+        }, 120000); // 2 minutes
+
         recognition.onresult = function (event) {
-          const result = event.results[0][0].transcript;
+          const result = event.results[event.results.length - 1][0].transcript;
           console.log("Recognized: ", result);
-          answerInput.value = result;
+          answerInput.value += result + " ";
         };
 
         recognition.onerror = function (event) {
@@ -152,13 +152,15 @@
           const questiontext = resume_questions[currentQuestion];
           document.getElementById("questionText").textContent = questiontext;
           generateAndPlaySpeech(questiontext);
-          currentQuestion++; // Increment the currentQuestion index
         } else {
           submitAnswers(); // Handle the submission or transition to the next phase
         }
       }
 
       function submitAnswer() {
+        if (recognition && isListening) {
+          recognition.stop();
+        }
         const answerInput = document.getElementById("answerInput");
         answers.push(answerInput.value);
         answerInput.value = ""; // Clear the textarea
@@ -226,7 +228,7 @@
         }
       }
 
-      async function generateAndPlaySpeech(text_to_speak) {
+      async function generateAndPlaySpeech(text_to_speak, callback) {
         try {
           const response = await fetch("/generate_speech", {
             method: "POST",
@@ -243,6 +245,7 @@
           const blob = await response.blob();
           const audioURL = URL.createObjectURL(blob);
           const audio = new Audio(audioURL);
+          // Setup callback to start listening after speech ends
           audio.play();
         } catch (error) {
           console.error("Error generating or playing speech:", error);
