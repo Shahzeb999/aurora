@@ -30,8 +30,8 @@ const Navbar = props => {
       link: "",
     },
     {
-      name: "Work",
-      link: "work",
+      name: "Review CV",
+      link: "reviewCV",
     },
     {
       name : "Demo",
@@ -41,8 +41,6 @@ const Navbar = props => {
       name: "Team",
       link:"team",
     },
-
-    
   ];
 
   return (
@@ -82,8 +80,6 @@ const Navbar = props => {
         icon={<SwitchIcon />}
         {...props}
       />
-
-      {/* Mobile Content */}
 
       <Box
         as={motion.div}

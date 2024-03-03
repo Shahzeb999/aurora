@@ -13,10 +13,14 @@ from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
 @app.route('/', methods=['POST','GET'])
+def upload_resume():
+    domain = request.form.get('domain')
+    resume_file = request.files['resume']
+    # Process the domain and resume file as needed
+    return {'message': 'Resume uploaded successfully'}
+
 def hello():
     return render_template('index.html')
-
-
 
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():

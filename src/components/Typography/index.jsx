@@ -5,9 +5,9 @@ export const Heading0 = ({ children, ...props }) => {
     <Heading
       {...props}
       as="h1"
-      py={{ base: "0.25em", md: "0.50em" }}
+      py={{ base: "0.25em", md: "0.60em" }}
       fontSize={{ sm: "3em", md: "5em", lg: "6em" }}
-      lineHeight={{ base: "0.9em" }}
+      lineHeight={{ base: "0.99em" }}
     >
       {children}
     </Heading>

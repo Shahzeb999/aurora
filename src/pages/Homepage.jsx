@@ -1,11 +1,11 @@
 import React from "react";
-import {useState, Suspense} from 'react';
+import { useState, Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Environment, OrbitControls, ContactShadows } from "@react-three/drei";
 import Earth from "../Earth"
 import { motion } from "framer-motion";
-import { Box, Center, Flex, Text,Image, Grid } from "@chakra-ui/react";
-import { Body,Heading0, Heading1, Heading2, TextLarge ,Heading3, Heading4} from "../components/Typography";
+import { Box, Center, Flex, Text, Image, Grid } from "@chakra-ui/react";
+import { Body, Heading0, Heading1, Heading2, TextLarge, Heading3, Heading4 } from "../components/Typography";
 import { PrimaryButton } from "../components/Buttons";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import useColorSwitcher from "../utils/useColorSwitcher";
@@ -26,22 +26,66 @@ import INTU_BIG from "../assets/icons/INTU_BIG.png";
 import META_BIG from "../assets/icons/META_BIG.png";
 import MSFT_BIG from "../assets/icons/MSFT_BIG.png";
 import NFLX from "../assets/icons/NFLX.png";
-import  NVDA from "../assets/icons/NVDA.png";
-import  ORCL_BIG from "../assets/icons/ORCL_BIG.png";
-import  QCOM_BIG from "../assets/icons/QCOM_BIG.png";
-import  SONY_BIG from "../assets/icons/SONY_BIG.png";
-import  TSLA_BIG from "../assets/icons/TSLA_BIG.png";
-import  TSM from "../assets/icons/TSM.png";
-import  UBER from "../assets/icons/UBER.png";
-import  IconGithub from "../assets/icons/IconGithub.png";
-import  IconInstagram from "../assets/icons/IconInstagram.png";
-import  IconLinkedin from "../assets/icons/IconLinkedin.png";
-import  IconTwitter from "../assets/icons/IconTwitter.png";
+import NVDA from "../assets/icons/NVDA.png";
+import ORCL_BIG from "../assets/icons/ORCL_BIG.png";
+import QCOM_BIG from "../assets/icons/QCOM_BIG.png";
+import SONY_BIG from "../assets/icons/SONY_BIG.png";
+import TSLA_BIG from "../assets/icons/TSLA_BIG.png";
+import TSM from "../assets/icons/TSM.png";
+import UBER from "../assets/icons/UBER.png";
+import IconInstagram from "../assets/icons/IconInstagram.png";
+import IconLinkedin from "../assets/icons/IconLinkedin.png";
+import IconTwitter from "../assets/icons/IconTwitter.png";
 import aurora from "../assets/projects/aurora.png";
+import {useEffect} from "react";
 
 const Homepage = () => {
   const navigate = useNavigate();
   const { colorDark, secondary } = useColorSwitcher();
+  const [showDay, setShowDay] = useState(false);
+  const [showHours, setShowHours] = useState(false);
+  const [showMinutes, setShowMinutes] = useState(false);
+  const [showSeconds, setShowSeconds] = useState(false);
+
+  const [dayDuration, setDayDuration] = useState(0);
+  const [hoursDuration, setHoursDuration] = useState(0);
+  const [minutesDuration, setMinutesDuration] = useState(0);
+  const [secondsDuration, setSecondsDuration] = useState(0);
+
+  
+  useEffect(() => {
+    setTimeout(() => {
+      setShowDay(true);
+      setDayDuration(1000);
+      setTimeout(() => {
+        setShowDay(false);
+      }, 1000);
+    }, 1000);
+
+    setTimeout(() => {
+      setShowHours(true);
+      setHoursDuration(1000);
+      setTimeout(() => {
+        setShowHours(false);
+      }, 1000);
+    }, 3000);
+
+    setTimeout(() => {
+      setShowMinutes(true);
+      setMinutesDuration(1000);
+      setTimeout(() => {
+        setShowMinutes(false);
+      }, 1000);
+    }, 5000);
+
+    setTimeout(() => {
+      setShowSeconds(true);
+      setSecondsDuration(1000);
+      setTimeout(() => {
+        setShowSeconds(false);
+      }, 1000);
+    }, 7000);
+  }, []);
 
   const handleNavigate = (path) => {
     navigate(path);
@@ -68,13 +112,39 @@ const Homepage = () => {
               alignItems={{ sm: "center", lg: "flex-start" }}
             >
               <Heading0>
-              Onboard your global
-              team in 
-              </Heading0>
-              
-              <Heading4 big={true} color={secondary}>
-                day, hours, minutes , seconds
-              </Heading4>
+                Onboard your global team in
+                </Heading0>
+              {showDay && (
+                <Heading1 fontSize="5xl" color="blue.500">
+                  <motion.span animate={{ opacity: 0 }} transition={{ delay: 1, duration: dayDuration / 1500 }}>
+                    day
+                  </motion.span>
+                </Heading1>
+              )}
+              {/* Conditional rendering to show hours */}
+              {showHours && (
+                <Heading1 fontSize="5xl" color="green.500">
+                  <motion.span animate={{ opacity: 0 }} transition={{ delay: 1, duration: hoursDuration / 1500 }}>
+                    hours
+                  </motion.span>
+                </Heading1>
+              )}
+              {/* Conditional rendering to show minutes */}
+              {showMinutes && (
+                <Heading1 fontSize="5xl" color="yellow.500">
+                  <motion.span animate={{ opacity: 0 }} transition={{ delay: 1, duration: minutesDuration / 1500 }}>
+                    minutes
+                  </motion.span>
+                </Heading1>
+              )}
+              {/* Conditional rendering to show seconds */}
+              {showSeconds && (
+                <Heading1 fontSize="5xl" color="purple.500">
+                  <motion.span animate={{ opacity: 0 }} transition={{ delay: 1, duration: secondsDuration / 1500 }}>
+                    seconds
+                  </motion.span>
+                </Heading1>
+              )}
 
               <Body
                 w={{ base: "80%", xl: "40%" }}
@@ -86,21 +156,21 @@ const Homepage = () => {
                 }}
                 fontWeight="bold"
               >
-               <br>
-               </br>
-               Aurora is a better way to hire. We're an AI-powered platform that sources, vets, and pays your next employees
+                <br>
+                </br>
+                Aurora is a better way to hire. We're an AI-powered platform that sources, vets, and pays your next employees
               </Body>
               <br>
-               </br>
-               <PrimaryButton
-                onClick={() => handleNavigate('/team')} 
+              </br>
+              <PrimaryButton
+                onClick={() => handleNavigate('/team')}
                 theme={secondary}
                 mt={4}
               >
                 Hire a team
               </PrimaryButton>
               <PrimaryButton
-                onClick={() => handleNavigate('/demo')} 
+                onClick={() => handleNavigate('/demo')}
                 theme={secondary}
                 mt={4}
               >
@@ -109,24 +179,24 @@ const Homepage = () => {
             </Flex>
           </Box>
           <Center
-          width={{ lg: "20rem", xl: "65rem" }}
-          height={{ lg: "40rem", xl: "45rem" }}
-          display={{ base: "none", lg: "block" }}
-          mt="0"
-        >
-          <Canvas style={{ height: '100vh' }}>
-            <ambientLight />
-            <OrbitControls enableZoom={false}/>
-            <Suspense fallback={null}>
-              <Earth />
-              <Environment preset='sunset'/>
-              <ContactShadows position={[0,0,0]} opacity={0.5} scale={50} blur={1} far={10} resolution={256} color="#000000" />
-            </Suspense>
-          </Canvas>
-        </Center>
-      </Flex>
-    </Box>
-  </motion.div>
+            width={{ lg: "20rem", xl: "65rem" }}
+            height={{ lg: "40rem", xl: "45rem" }}
+            display={{ base: "none", lg: "block" }}
+            mt="0"
+          >
+            <Canvas style={{ height: '100vh' }}>
+              <ambientLight />
+              <OrbitControls enableZoom={false} />
+              <Suspense fallback={null}>
+                <Earth />
+                <Environment preset='sunset' />
+                <ContactShadows position={[0, 0, 0]} opacity={0.5} scale={50} blur={1} far={10} resolution={256} color="#000000" />
+              </Suspense>
+            </Canvas>
+          </Center>
+        </Flex>
+      </Box>
+    </motion.div>
   );
 };
 
@@ -199,7 +269,7 @@ const Languages = () => {
         icon={ADI_BIG}
         size={{ base: "3em", xl: "5.5em" }}
       />}
-       {<IconBox
+      {<IconBox
         icon={AMZN}
         size={{ base: "3em", xl: "5.5em" }}
       />}
@@ -235,7 +305,7 @@ const Frameworks = () => {
         icon={INTC}
         size={{ base: "3em", xl: "5.5em" }}
       />}
-       {<IconBox
+      {<IconBox
         icon={ASML}
         size={{ base: "3em", xl: "5.5em" }}
       />}
@@ -263,7 +333,7 @@ const Tools = () => {
         icon={NVDA}
         size={{ base: "3em", xl: "5.5em" }}
       />}
-       {
+      {
         <IconBox
           icon={UBER}
           size={{ base: "3em", xl: "5.5em" }} />
@@ -332,7 +402,7 @@ const Contact = ({ ...props }) => {
           placeItems="center"
         >
           <TextLarge mb="64px" align="center">
-          If you have inquiries or wish to initiate a conversation, please feel free to reach out to us via my inbox.
+            If you have inquiries or wish to initiate a conversation, please feel free to reach out to us via my inbox.
           </TextLarge>
         </Box>
         <Grid
@@ -354,10 +424,10 @@ const Contact = ({ ...props }) => {
             name="Linkedin"
           />
           <IconBox
-          icon={IconTwitter}
-          link="https://twitter.com/callmeadnaan19"
-          size="3em"
-          name="Twitter"
+            icon={IconTwitter}
+            link="https://twitter.com/callmeadnaan19"
+            size="3em"
+            name="Twitter"
           />
           <IconBox
             icon={IconInstagram}
@@ -373,9 +443,9 @@ const Contact = ({ ...props }) => {
 
 const Footer = () => {
   return (
-    <footer style={{textAlign: "center"}}>
-      <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-        <img src={aurora} alt="Logo" style={{width: "60px", height: "60px"}} />
+    <footer style={{ textAlign: "center" }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <img src={aurora} alt="Logo" style={{ width: "60px", height: "60px" }} />
         <br />
         <span>© 2024 Aurora.io Corporation</span>
       </div>
@@ -387,8 +457,8 @@ const HomeAndHireAndContact = () => {
   return (
     <>
       <Homepage />
-      <Hire />     
-      <Contact/>
+      <Hire />
+      <Contact />
       <Footer />
     </>
   );
