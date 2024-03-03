@@ -5,10 +5,10 @@ const ProjectImage = ({ src, alt, ...props }) => {
   return (
     <Image
       {...props}
-      rounded="8px"
+      rounded="10px"
       mx={{ base: "auto", xxl: 0 }}
       objectFit="cover"
-      boxSize="100%"
+      boxSize="50%"
       boxShadow={{ base: "0 0 0 2px", md: "0 0 0 3px" }}
       src={src}
       fallbackSrc="https://via.placeholder.com/500"

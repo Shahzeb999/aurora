@@ -1,11 +1,11 @@
-import { Box, Stack } from "@chakra-ui/react";
+import { Box, Heading, Stack } from "@chakra-ui/react";
 import { PrimaryButton, SecondaryButton } from "../Buttons";
 import Bullet from "../miscellaneous/Bullet";
-import { Body, Heading3 } from "../Typography";
+import { Body, Heading4 } from "../Typography";
 
 export const ProjectCard = ({ media, ...props }) => {
   return (
-    <Box p="1em" {...props}>
+    <Box p="0.5em" {...props}>
       {media && media}
     </Box>
   );
@@ -15,7 +15,6 @@ export const ProjectInfoCard = ({
   name,
   info,
   live,
-  repo,
   length,
   ...props
 }) => {
@@ -29,11 +28,9 @@ export const ProjectInfoCard = ({
       fontSize={{ base: "md", md: "lg" }}
     >
       <Stack spacing={8}>
-        <Heading3 {...props} textAlign={{ md: "center" }}>
-          {name}
-        </Heading3>
         {info.length !== 0 && (
           <Stack spacing={8} as="ul">
+            <Heading4>{name}</Heading4> {/* Display name outside of the loop */}
             {info.map((item, index) => (
               <Stack spacing={3} direction="row" as="li" key={index}>
                 <Bullet />
@@ -50,14 +47,9 @@ export const ProjectInfoCard = ({
         direction={{ base: "column", md: "row" }}
       >
         {live !== null && (
-          <PrimaryButton w="100%" as="a" href={live} target="_blank">
-            LIVE SITE
+          <PrimaryButton w="80%" as="a" href={live} target="_blank">
+            View Profile
           </PrimaryButton>
-        )}
-        {repo !== null && (
-          <SecondaryButton w="100%" as="a" href={repo} target="_blank">
-            GITHUB REPO
-          </SecondaryButton>
         )}
       </Stack>
     </Stack>
