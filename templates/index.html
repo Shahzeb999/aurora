@@ -9,11 +9,11 @@
 <body>
   <div class="container">
     <div class="header">
-      <img src="{{ url_for('static', filename='aurora.jpg') }}" alt="Aurora.AI" class="logo">
+      <img src="{{ url_for('static', filename='aurora_stars.png') }}" alt="Aurora.AI" class="logo">
     </div>
     <div class="body">
-      <h1>Welcome to AI Interview Bot</h1>
-      <p class="description">AI Interview Bot is an application that helps you with interview preparation and resume reviewing. Whether you're a job seeker looking to ace your next interview or an employer seeking to streamline the recruitment process, our application has you covered.</p>
+      <h1>Welcome to Aurora.ai!</h1>
+      <p class="description">Aurora is your professional and personalized career companion that helps you with interview preparation and resume reviewing. Whether you're a job seeker looking to ace your next interview or an employer seeking to streamline the recruitment process, our application has you covered.</p>
     </div>
     <div class="btn-container">
       <a href="#" class="btn" onclick="takeDemo()">Take Demo</a>
@@ -22,10 +22,10 @@
     <div class="extra-content">
       <h2>Features:</h2>
       <ul>
-        <li>Interactive interviews</li>
-        <li>Resume reviewing with detailed feedback</li>
-        <li>Customizable interview questions</li>
-        <li>Speech based question answering</li>
+        <h3>1. Interactive interviews</h3>
+        <h3>2. Resume reviewing with detailed feedback</h3>
+        <h3>3. Customizable interview questions</h3>
+        <h3>4. Speech based question answering</h3>
       </ul>
     </div>
   </div>
@@ -38,7 +38,7 @@
     function reviewResume() {
       // Redirect to the resume reviewer page
       //window.location.href = "resume_reviewer.html";
-      alert("Coming soon")
+      window.location.href = "./resume"
     }
 
     // JavaScript effect to highlight the features list

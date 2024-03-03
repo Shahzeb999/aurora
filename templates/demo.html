@@ -30,7 +30,11 @@
     </div>
 
     <div id="evaluationSection" style="display: none">
-      <p id="evaluationText"></p>
+      <h3>Interview Results</h3>
+      <p id="summaryText"></p>
+      <p id="techScore"></p>
+      <p id="resumeScore"></p>
+      <p id="feedbacksText"></p>
     </div>
   </div>
 
@@ -178,8 +182,7 @@
         .then(response => response.json())
         .then(data => {
           tech_questions = data.questions;
-          document.getElementById("videoSection").style.display = "none"; // Hide video section
-          document.getElementById("evaluationSection").style.display = "none"; // Hide evaluation section
+          document.getElementById("videoSection").style.display = "block"; // Display video section
           document.getElementById("questionSection").style.display = "block"; // Display tech questions section
           currentQuestion = 0; // Reset current question index
           displayTechQuestion(); // Display first tech question
@@ -188,6 +191,11 @@
     }
 
     function displayTechQuestion() {
+      const videoSection = document.getElementById("videoSection");
+      if (videoSection.style.display === "none") {
+        startVideo();
+      }
+      
       if (currentQuestion < tech_questions.length) {
         const questionText = tech_questions[currentQuestion];
         document.getElementById("questionText").textContent = questionText;
@@ -257,9 +265,12 @@
             .then(response => response.json())
             .then(summary => {
               // Process the generated summary as needed
-              document.getElementById("evaluationText").textContent = "Summary: " + JSON.stringify(summary);
+              document.getElementById("summaryText").textContent = "Summary: " + summary.feedbacks;
+              document.getElementById("techScore").textContent = "Tech Score: " + feedbacks.tech_score;
+              document.getElementById("resumeScore").textContent = "Resume Score: " + feedbacks.resume_score;
+              document.getElementById("feedbacksText").textContent = "Feedbacks: " + feedbacks.resume_feedbacks;
               document.getElementById("evaluationSection").style.display = "block"; // Display the evaluation section
-              console.log("Summary generated:", summary.feedbacks);
+              console.log("Summary generated:", summary);
             })
             .catch(error => console.error("Error generating summary:", error));
         })

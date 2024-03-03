@@ -181,14 +181,14 @@ class IntervueBot():
         resume_feedback_template = ChatPromptTemplate.from_messages([
             ("system", f'''
                         You are a world renowned resume reviewer, you are given a resume of a person belonging/applying  to work in the {self.domain} domain. Your task is to provide him constructive feedbacks about his resume, highlighting any errors, mistakes, unprofessional things, anything not resonating with his resume. Also, complement him about the good things in his resume, like if the structure is good and the content is good then mention about that and so on.
+                        In your feedback guide the user about how he could enhance his profile to be a better fit for the the role the he is applying to. Like suggest some projects, certifications, etc.
 
                         **Note : 
-                        1. Just provide the feedback and do not include any extra text in the response. 
-                        2. The feedbacks should be constructive. 
-                        3. The feedback should be based on the fact the the resume is of a person who is working / wants to work in the  {self.domain}. So the resume should be relevant to this field. Include the feedback on the basis of relevancy to the domain also. 
+                        1. Just provide the feedback as plain text and do not include any extra text in the response. 
+                        2. The feedback should be based on the fact the the resume is of a person who is working / wants to work in the  {self.domain}. So the resume should be relevant to this field. Include the feedback on the basis of relevancy to the domain also. 
 
-                        4. Make sure to seperate the different feedbacks with the help of \n delimiter, as I want to segregate them and make a list of them.
-                        5. Follow all the above guidelines while providing the feedback. 
+                        3. Make sure to seperate the different feedbacks with the help of \n , as I want to segregate them and make a list of them.
+                        4. Follow all the above guidelines while providing the feedback. 
 
              '''      
             ),

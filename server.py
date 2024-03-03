@@ -5,12 +5,14 @@ global bot
 global text_2_speech
 global transcriber
 import os
+from flask_cors import CORS 
 
 
 import tempfile
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['POST','GET'])
 def hello():
@@ -19,6 +21,10 @@ def hello():
 @app.route('/demo')
 def demo():
     return render_template('demo.html')
+
+@app.route('/resume')
+def resume(): 
+    return render_template('resume.html')
 
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
@@ -95,7 +101,7 @@ def review_resume():
     if 'resume' not in request.files:
         return jsonify({"error": "No resume file provided"}), 400
     file = request.files['resume']
-    domain = request.form.get('domain', 'default_domain')
+    domain = request.form.get('domain')
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
     
