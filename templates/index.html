@@ -1,229 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Interview Bot</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
 
-        #uploadSection,
-        #questionSection,
-        #evaluationSection {
-            margin-top: 20px;
-            text-align: center;
-        }
+      #uploadSection,
+      #questionSection,
+      #evaluationSection {
+        margin-top: 20px;
+        text-align: center;
+      }
 
-        #resumeInput,
-        #domainInput {
-            margin-bottom: 10px;
-        }
+      #resumeInput,
+      #domainInput {
+        margin-bottom: 10px;
+      }
 
-        textarea {
-            width: 300px;
-            height: 100px;
-            margin-top: 10px;
-            resize: none;
-        }
+      textarea {
+        width: 300px;
+        height: 100px;
+        margin-top: 10px;
+        resize: none;
+      }
 
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+      }
 
-        button:hover {
-            background-color: #45a049;
-        }
+      button:hover {
+        background-color: #45a049;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="uploadSection">
-        <input type="file" id="resumeInput" accept=".pdf" />
-        <input type="text" id="domainInput" placeholder="Enter Domain" />
-        <button onclick="uploadResume()">Upload Resume</button>
+      <input type="file" id="resumeInput" accept=".pdf" />
+      <input type="text" id="domainInput" placeholder="Enter Domain" />
+      <button onclick="uploadResume()">Upload Resume</button>
     </div>
 
-    <div id="questionSection" style="display: none;">
-        <p id="questionText"></p>
-        <textarea id="answerInput" placeholder="Your answer"></textarea>
-        <button onclick="submitAnswer()">Submit Answer</button>
+    <div id="questionSection" style="display: none">
+      <p id="questionText"></p>
+      <textarea id="answerInput" placeholder="Your answer"></textarea>
+      <button onclick="startListening()">Start Listening</button>
+      <button onclick="submitAnswer()">Submit Answer</button>
     </div>
 
-    <div id="evaluationSection" style="display: none;">
-        <p id="evaluationText"></p>
+    <div id="evaluationSection" style="display: none">
+      <p id="evaluationText"></p>
     </div>
 
     <script>
-        let currentQuestion = 0;
-        let resume_questions = [];
-        let tech_questions = [];
-        let answers = [];
-        let feedbacks = {}; // Declare the feedbacks object
-        let res_val = 0;
-        const formData = new FormData();
+      let currentQuestion = 0;
+      let resume_questions = [];
+      let tech_questions = [];
+      let answers = [];
+      let feedbacks = {}; // Declare the feedbacks object
+      let res_val = 0;
+      const formData = new FormData();
 
-        function uploadResume() {
-            const resumeInput = document.getElementById('resumeInput');
-            const domainInput = document.getElementById('domainInput');
+      let recognition;
+      let isListening = false;
 
-            if (resumeInput.files.length == 0 || domainInput.value === "") {
-                alert("Please select a resume and enter a domain.");
-                return;
+      function startListening() {
+        const answerInput = document.getElementById("answerInput");
+
+        // Check if browser supports speech recognition
+        if (!("webkitSpeechRecognition" in window)) {
+          alert("Speech recognition is not supported by your browser.");
+          return;
+        }
+
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        recognition.onstart = function () {
+          console.log("Speech recognition started. Speak into the microphone.");
+          isListening = true;
+          // Set a timeout to stop listening after 30 seconds
+          setTimeout(function () {
+            if (isListening) {
+              console.log("Speech recognition stopped due to timeout.");
+              recognition.stop();
             }
+          }, 30000); // 30 seconds timeout
+        };
 
-            formData.append('resume', resumeInput.files[0]);
-            formData.append('domain', domainInput.value);
+        recognition.onresult = function (event) {
+          const result = event.results[0][0].transcript;
+          console.log("Recognized: ", result);
+          answerInput.value = result;
+        };
 
-            fetch('/generate_resume_questions', {
-                method: 'POST',
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(data => {
-                    resume_questions = data.questions;
-                    document.getElementById('uploadSection').style.display = 'none';
-                    document.getElementById('questionSection').style.display = 'block';
-                    displayQuestion();
-                })
-                .catch(error => console.error('Error:', error));
+        recognition.onerror = function (event) {
+          console.error("Speech recognition error: ", event.error);
+        };
+
+        recognition.onend = function () {
+          console.log("Speech recognition ended.");
+          isListening = false;
+        };
+
+        recognition.start();
+      }
+
+      function uploadResume() {
+        const resumeInput = document.getElementById("resumeInput");
+        const domainInput = document.getElementById("domainInput");
+
+        if (resumeInput.files.length == 0 || domainInput.value === "") {
+          alert("Please select a resume and enter a domain.");
+          return;
         }
 
-        function displayQuestion() {
-            if (currentQuestion < resume_questions.length) {
-                const questiontext = resume_questions[currentQuestion];
-                document.getElementById('questionText').textContent = questiontext;
-                generateAndPlaySpeech(questiontext);
-                currentQuestion++; // Increment the currentQuestion index
-            } else {
-                submitAnswers(); // Handle the submission or transition to the next phase
-            }
+        formData.append("resume", resumeInput.files[0]);
+        formData.append("domain", domainInput.value);
+
+        fetch("/generate_resume_questions", {
+          method: "POST",
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            resume_questions = data.questions;
+            document.getElementById("uploadSection").style.display = "none";
+            document.getElementById("questionSection").style.display = "block";
+            displayQuestion();
+          })
+          .catch(error => console.error("Error:", error));
+      }
+
+      function displayQuestion() {
+        if (currentQuestion < resume_questions.length) {
+          const questiontext = resume_questions[currentQuestion];
+          document.getElementById("questionText").textContent = questiontext;
+          generateAndPlaySpeech(questiontext);
+          currentQuestion++; // Increment the currentQuestion index
+        } else {
+          submitAnswers(); // Handle the submission or transition to the next phase
         }
-        
+      }
 
-        function submitAnswer() {
-            const answerInput = document.getElementById('answerInput');
-            answers.push(answerInput.value);
-            answerInput.value = ''; // Clear the textarea
-            currentQuestion++;
-            if (res_val == 0) {
-                displayQuestion();
-            }
-            else {
-                displayTechQuestion()
-            }
-
+      function submitAnswer() {
+        const answerInput = document.getElementById("answerInput");
+        answers.push(answerInput.value);
+        answerInput.value = ""; // Clear the textarea
+        currentQuestion++;
+        if (res_val == 0) {
+          displayQuestion();
+        } else {
+          displayTechQuestion();
         }
+      }
 
-        function submitAnswers() {
-            res_val = 1;
-            document.getElementById('questionSection').style.display = 'none';
+      function submitAnswers() {
+        res_val = 1;
+        document.getElementById("questionSection").style.display = "none";
 
-            fetch('/validate_resume_responses', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ questions: resume_questions, answers: answers }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    feedbacks.resume_feedbacks = data.feedbacks; // Save feedbacks
-                    feedbacks.resume_score = data.average_rating;
-                    // Instead of displaying feedbacks, move on to generating tech questions
-                    generateTechnicalQuestions();
-                })
-                .catch(error => console.error('Error:', error));
+        fetch("/validate_resume_responses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            questions: resume_questions,
+            answers: answers,
+          }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            feedbacks.resume_feedbacks = data.feedbacks; // Save feedbacks
+            feedbacks.resume_score = data.average_rating;
+            // Instead of displaying feedbacks, move on to generating tech questions
+            generateTechnicalQuestions();
+          })
+          .catch(error => console.error("Error:", error));
+      }
+
+      function generateTechnicalQuestions() {
+        fetch("/generate_tech_questions", {
+          method: "POST",
+          body: formData,
+        })
+          .then(response => response.json())
+          .then(data => {
+            tech_questions = data.questions;
+            document.getElementById("evaluationSection").style.display = "none"; // Hide evaluation section
+            document.getElementById("questionSection").style.display = "block"; // Display tech questions section
+            currentQuestion = 0; // Reset current question index
+            displayTechQuestion(); // Display first tech question
+          })
+          .catch(error => console.error("Error:", error));
+      }
+
+      function displayTechQuestion() {
+        if (currentQuestion < tech_questions.length) {
+          const questionText = tech_questions[currentQuestion];
+          document.getElementById("questionText").textContent = questionText;
+
+          // Call the speech function with the current question
+          generateAndPlaySpeech(questionText);
+          currentQuestion++; // Move to the next question for the next button click
+        } else {
+          // All tech questions answered, move on to tech feedback or reset
+          // submitTechAnswers(); // Uncomment or implement this function as needed
+          console.log("All questions have been presented.");
+          currentQuestion = 0; // Reset to the first question or handle as needed
         }
+      }
 
-        function generateTechnicalQuestions() {
-            fetch('/generate_tech_questions', {
-                method: 'POST',
-                body: formData,
-            })
-                .then(response => response.json())
-                .then(data => {
-                    tech_questions = data.questions;
-                    document.getElementById('evaluationSection').style.display = 'none'; // Hide evaluation section
-                    document.getElementById('questionSection').style.display = 'block'; // Display tech questions section
-                    currentQuestion = 0; // Reset current question index
-                    displayTechQuestion(); // Display first tech question
-                })
-                .catch(error => console.error('Error:', error));
+      async function generateAndPlaySpeech(text_to_speak) {
+        try {
+          const response = await fetch("/generate_speech", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ text: text_to_speak }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const blob = await response.blob();
+          const audioURL = URL.createObjectURL(blob);
+          const audio = new Audio(audioURL);
+          audio.play();
+        } catch (error) {
+          console.error("Error generating or playing speech:", error);
         }
+      }
 
-        function displayTechQuestion() {
-            if (currentQuestion < tech_questions.length) {
-                const questionText = tech_questions[currentQuestion];
-                document.getElementById('questionText').textContent = questionText;
-                
-                // Call the speech function with the current question
-                generateAndPlaySpeech(questionText);
-                currentQuestion++; // Move to the next question for the next button click
-            } else {
-                // All tech questions answered, move on to tech feedback or reset
-                // submitTechAnswers(); // Uncomment or implement this function as needed
-                console.log('All questions have been presented.');
-                currentQuestion = 0; // Reset to the first question or handle as needed
-            }
-        }
+      function submitTechAnswers() {
+        document.getElementById("questionSection").style.display = "none";
 
-        async function generateAndPlaySpeech(text_to_speak) {
-            try {
-                const response = await fetch('/generate_speech', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ text: text_to_speak})
-                });
-        
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-        
-                const blob = await response.blob();
-                const audioURL = URL.createObjectURL(blob);
-                const audio = new Audio(audioURL);
-                audio.play();
-            } catch (error) {
-                console.error('Error generating or playing speech:', error);
-            }
-        }
-
-        function submitTechAnswers() {
-            document.getElementById('questionSection').style.display = 'none';
-
-            fetch('/validate_technical_responses', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ questions: tech_questions, answers: answers }),
-            })
-                .then(response => response.json())
-                .then(data => {
-                    feedbacks.tech_feedbacks = data.feedbacks;
-                    feedbacks.tech_score = data.average_rating; // Corrected assignment
-                    // Process feedback or move on to next steps
-                })
-                .catch(error => console.error('Error:', error));
-        }
+        fetch("/validate_technical_responses", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ questions: tech_questions, answers: answers }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            feedbacks.tech_feedbacks = data.feedbacks;
+            feedbacks.tech_score = data.average_rating; // Corrected assignment
+            // Process feedback or move on to next steps
+          })
+          .catch(error => console.error("Error:", error));
+      }
     </script>
-
-
-</body>
-
+  </body>
 </html>
