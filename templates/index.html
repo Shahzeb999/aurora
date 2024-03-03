@@ -103,11 +103,15 @@
 
         function displayQuestion() {
             if (currentQuestion < resume_questions.length) {
-                document.getElementById('questionText').textContent = resume_questions[currentQuestion];
+                const questiontext = resume_questions[currentQuestion];
+                document.getElementById('questionText').textContent = questiontext;
+                generateAndPlaySpeech(questiontext);
+                currentQuestion++; // Increment the currentQuestion index
             } else {
-                submitAnswers();
+                submitAnswers(); // Handle the submission or transition to the next phase
             }
         }
+        
 
         function submitAnswer() {
             const answerInput = document.getElementById('answerInput');
@@ -162,10 +166,40 @@
 
         function displayTechQuestion() {
             if (currentQuestion < tech_questions.length) {
-                document.getElementById('questionText').textContent = tech_questions[currentQuestion];
+                const questionText = tech_questions[currentQuestion];
+                document.getElementById('questionText').textContent = questionText;
+                
+                // Call the speech function with the current question
+                generateAndPlaySpeech(questionText);
+                currentQuestion++; // Move to the next question for the next button click
             } else {
-                // All tech questions answered, move on to tech feedback
-                submitTechAnswers();
+                // All tech questions answered, move on to tech feedback or reset
+                // submitTechAnswers(); // Uncomment or implement this function as needed
+                console.log('All questions have been presented.');
+                currentQuestion = 0; // Reset to the first question or handle as needed
+            }
+        }
+
+        async function generateAndPlaySpeech(text_to_speak) {
+            try {
+                const response = await fetch('/generate_speech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text_to_speak})
+                });
+        
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+        
+                const blob = await response.blob();
+                const audioURL = URL.createObjectURL(blob);
+                const audio = new Audio(audioURL);
+                audio.play();
+            } catch (error) {
+                console.error('Error generating or playing speech:', error);
             }
         }
 

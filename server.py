@@ -1,10 +1,12 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_file, send_from_directory
 from Bot import IntervueBot
 from speech_services import TextToSpeech, AudioTranscriber
 global bot
 global text_2_speech
 global transcriber
 import os
+
+
 import tempfile
 from werkzeug.utils import secure_filename
 
@@ -14,11 +16,16 @@ app = Flask(__name__)
 def hello():
     return render_template('index.html')
 
+
+
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
+    print("Generate Speech called")
     text_2_speech = TextToSpeech()
-    audio_path = text_2_speech.generate_speech(request.get_json().get('text'))
-    return audio_path
+    audio_obj = text_2_speech.generate_speech(request.get_json().get('text'))
+    print("Generated the object : ", audio_obj)
+    # Instead of returning send_file directly, use send_from_directory
+    return send_from_directory(directory='./audio/', path='tts.mp3', as_attachment=False)
 
 @app.route("/transcribe", methods=['POST'])
 def transcribe():
