@@ -14,7 +14,7 @@
             align-items: center;
         }
         
-        #questionSection, #evaluationSection {
+        #uploadSection, #questionSection, #evaluationSection {
             margin-top: 20px;
         }
         
@@ -35,6 +35,8 @@
     <div id="questionSection" style="display: none;">
         <p id="questionText"></p>
         <textarea id="answerInput" placeholder="Your answer"></textarea>
+        <audio controls id="questionAudio" style="display: none;"></audio>
+        <button onclick="startListening()">Start Listening</button>
         <button onclick="submitAnswer()">Submit Answer</button>
     </div>
 
@@ -46,20 +48,55 @@
         let currentQuestion = 0;
         let questions = [];
         let answers = [];
-    
+        let recognition;
+
+        function startListening() {
+            const answerInput = document.getElementById('answerInput');
+
+            // Check if browser supports speech recognition
+            if (!('webkitSpeechRecognition' in window)) {
+                alert("Speech recognition is not supported by your browser.");
+                return;
+            }
+
+            recognition = new webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = function() {
+                console.log('Speech recognition started. Speak into the microphone.');
+            };
+
+            recognition.onresult = function(event) {
+                const result = event.results[0][0].transcript;
+                console.log('Recognized: ', result);
+                answerInput.value = result;
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error: ', event.error);
+            };
+
+            recognition.onend = function() {
+                console.log('Speech recognition ended.');
+            };
+
+            recognition.start();
+        }
+
         function uploadResume() {
             const resumeInput = document.getElementById('resumeInput');
             const domainInput = document.getElementById('domainInput');
-    
+
             if (resumeInput.files.length == 0 || domainInput.value === "") {
                 alert("Please select a resume and enter a domain.");
                 return;
             }
-    
+
             const formData = new FormData();
             formData.append('resume', resumeInput.files[0]);
             formData.append('domain', domainInput.value);
-    
+
             fetch('/generate_resume_questions', {
                 method: 'POST',
                 body: formData,
@@ -73,15 +110,32 @@
             })
             .catch(error => console.error('Error:', error));
         }
-    
+
         function displayQuestion() {
             if (currentQuestion < questions.length) {
-                document.getElementById('questionText').textContent = questions[currentQuestion];
+                const questionText = questions[currentQuestion];
+                document.getElementById('questionText').textContent = questionText;
+
+                // Generate speech for the question
+                fetch('/generate_speech', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: questionText }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const questionAudio = document.getElementById('questionAudio');
+                    questionAudio.src = data.audio_path;
+                    questionAudio.play();
+                })
+                .catch(error => console.error('Error:', error));
             } else {
                 submitAnswers();
             }
         }
-    
+
         function submitAnswer() {
             const answerInput = document.getElementById('answerInput');
             answers.push(answerInput.value);
@@ -89,16 +143,16 @@
             currentQuestion++;
             displayQuestion();
         }
-    
+
         function submitAnswers() {
             document.getElementById('questionSection').style.display = 'none';
-    
+
             fetch('/validate_resume_responses', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({questions: questions, answers: answers}),
+                body: JSON.stringify({ questions: questions, answers: answers }),
             })
             .then(response => response.json())
             .then(data => {
@@ -106,12 +160,12 @@
                 const evaluationText = document.getElementById('evaluationText');
                 // Clear previous content
                 evaluationText.innerHTML = '';
-    
+
                 // Display average rating
                 const ratingPara = document.createElement('p');
                 ratingPara.textContent = `Average Rating: ${data.average_rating}`;
                 evaluationText.appendChild(ratingPara);
-    
+
                 // Display feedbacks
                 const feedbackList = document.createElement('ul');
                 data.feedbacks.forEach(feedback => {
@@ -124,6 +178,7 @@
             .catch(error => console.error('Error:', error));
         }
     </script>
-    
+
 </body>
 </html>
+
