@@ -16,7 +16,8 @@
 
       #uploadSection,
       #questionSection,
-      #evaluationSection {
+      #evaluationSection,
+      #videoSection {
         margin-top: 20px;
         text-align: center;
       }
@@ -45,6 +46,11 @@
       button:hover {
         background-color: #45a049;
       }
+
+      video {
+        width: 300px;
+        height: auto;
+      }
     </style>
   </head>
 
@@ -53,6 +59,10 @@
       <input type="file" id="resumeInput" accept=".pdf" />
       <input type="text" id="domainInput" placeholder="Enter Domain" />
       <button onclick="uploadResume()">Upload Resume</button>
+    </div>
+
+    <div id="videoSection" style="display: none">
+      <video id="video" autoplay></video>
     </div>
 
     <div id="questionSection" style="display: none">
@@ -124,15 +134,18 @@
       function uploadResume() {
         const resumeInput = document.getElementById("resumeInput");
         const domainInput = document.getElementById("domainInput");
-
+      
         if (resumeInput.files.length == 0 || domainInput.value === "") {
           alert("Please select a resume and enter a domain.");
           return;
         }
-
+      
         formData.append("resume", resumeInput.files[0]);
         formData.append("domain", domainInput.value);
-
+      
+        // Call the function to start displaying video
+        startVideo();
+      
         fetch("/generate_resume_questions", {
           method: "POST",
           body: formData,
@@ -141,11 +154,13 @@
           .then(data => {
             resume_questions = data.questions;
             document.getElementById("uploadSection").style.display = "none";
+            document.getElementById("videoSection").style.display = "block"; // Display video section
             document.getElementById("questionSection").style.display = "block";
             displayQuestion();
           })
           .catch(error => console.error("Error:", error));
       }
+      
 
       function displayQuestion() {
         if (currentQuestion < resume_questions.length) {
@@ -165,6 +180,7 @@
         answers.push(answerInput.value);
         answerInput.value = ""; // Clear the textarea
         currentQuestion++;
+
         if (res_val == 0) {
           displayQuestion();
         } else {
@@ -204,6 +220,7 @@
           .then(response => response.json())
           .then(data => {
             tech_questions = data.questions;
+            document.getElementById("videoSection").style.display = "none"; // Hide video section
             document.getElementById("evaluationSection").style.display = "none"; // Hide evaluation section
             document.getElementById("questionSection").style.display = "block"; // Display tech questions section
             currentQuestion = 0; // Reset current question index
@@ -224,7 +241,7 @@
           // All tech questions answered, move on to tech feedback or reset
           // submitTechAnswers(); // Uncomment or implement this function as needed
           console.log("All questions have been presented.");
-          currentQuestion = 0; // Reset to the first question or handle as needed
+          submitTechAnswers(); 
         }
       }
 
@@ -254,7 +271,7 @@
 
       function submitTechAnswers() {
         document.getElementById("questionSection").style.display = "none";
-
+      
         fetch("/validate_technical_responses", {
           method: "POST",
           headers: {
@@ -266,10 +283,58 @@
           .then(data => {
             feedbacks.tech_feedbacks = data.feedbacks;
             feedbacks.tech_score = data.average_rating; // Corrected assignment
-            // Process feedback or move on to next steps
+      
+            // Now, generate a summary about the candidate's interview
+            fetch("/provide_summary_about_the_interview", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                tech_score: feedbacks.tech_score,
+                resume_score: feedbacks.resume_score,
+                feedback: feedbacks.tech_feedbacks, // Using technical feedbacks here
+              }),
+            })
+              .then(response => response.json())
+              .then(summary => {
+                // Process the generated summary as needed
+                document.getElementById("evaluationText").textContent = "Summary: " + JSON.stringify(summary);
+                document.getElementById("evaluationSection").style.display = "block"; // Display the evaluation section
+                console.log("Summary generated:", summary);
+              })
+              .catch(error => console.error("Error generating summary:", error));
           })
           .catch(error => console.error("Error:", error));
       }
+      
+      // Function to start displaying video
+      function startVideo() {
+        const video = document.getElementById("video");
+
+        // Check if user's browser supports accessing media devices
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          alert("Your browser doesn't support accessing the camera.");
+          return;
+        }
+
+        // Access the user's camera and stream the video feed
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function (stream) {
+            video.srcObject = stream;
+            document.getElementById("videoSection").style.display = "block"; // Display the video section
+          })
+          .catch(function (error) {
+            console.error("Error accessing the camera:", error);
+            alert("Error accessing the camera. Please check your camera settings.");
+          });
+      }
+
+      // Call the function to start displaying video when the page loads
+      //window.onload = function () {
+        //startVideo();
+      //};
     </script>
   </body>
 </html>
