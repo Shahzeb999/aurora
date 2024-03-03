@@ -90,6 +90,11 @@ const Homepage = () => {
   const handleNavigate = (path) => {
     navigate(path);
   };
+  const handleInterview = (event) => {
+    event.preventDefault();
+    window.location.href = 'http://127.0.0.1:4000';
+  };
+  
 
   return (
     <motion.div
@@ -170,7 +175,7 @@ const Homepage = () => {
                 Hire a team
               </PrimaryButton>
               <PrimaryButton
-                onClick={() => handleNavigate('/demo')}
+                onClick={handleInterview}
                 theme={secondary}
                 mt={4}
               >

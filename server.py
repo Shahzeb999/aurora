@@ -5,26 +5,26 @@ global bot
 global text_2_speech
 global transcriber
 import os
+from flask_cors import CORS 
 
 
 import tempfile
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods=['POST','GET'])
-def upload_resume():
-    domain = request.form.get('domain')
-    resume_file = request.files['resume']
-    # Process the domain and resume file as needed
-    return {'message': 'Resume uploaded successfully'}
-
 def hello():
     return render_template('index.html')
 
 @app.route('/demo')
 def demo():
     return render_template('demo.html')
+
+@app.route('/resume')
+def resume(): 
+    return render_template('resume.html')
 
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
