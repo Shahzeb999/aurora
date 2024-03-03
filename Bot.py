@@ -46,7 +46,7 @@ class IntervueBot():
         generated_resume_questions = resume_question_chain.invoke({"input": f"{self.resume_text}"}).content
         generated_resume_questions_list = generated_resume_questions.split('\n')
         cleaned_resume_questions_list = [q for q in generated_resume_questions_list if q.strip()]
-        return cleaned_resume_questions_list
+        return {"questions":cleaned_resume_questions_list}
     
     def validate_response(self, questions ,responses): 
 
@@ -126,6 +126,7 @@ class IntervueBot():
         tech_que_chain = technical_question_generation | self.llm 
         tech_questions = tech_que_chain.invoke({'resume_text': f"{self.resume_text}"}).content.split('\n')
         cleaned_tech_questions = [q for q in tech_questions if q.strip()]
+        cleaned_tech_questions = [question for question in cleaned_tech_questions if '---------------' not in question]
         return {"questions":cleaned_tech_questions}
     
 
@@ -144,8 +145,9 @@ class IntervueBot():
                         Note: 
                         1. Only provide the validation score, feedback both seperated by a \n for easy segregation 
                         and avoid adding any extraneous content.
-                        2. for the score, return just the score like this : '8/10', seperated by the feedback using delimiter. Do not need to give the score like this : 'Score : 8/10', feedback:  ..... .
-                        3. follow the above guidelines while returning the scores.   
+                        2. for the score, return just the score like this : '8/10', seperated by the feedback using delimiter. Do not need to give the score like this : 'Score : 8/10', feedback:  ......
+
+                        3.Do not return the score like : 'Score : 2' return it like '8/10' always. 
                     '''),
             ("user", "{qa_pair}")
         ])
@@ -166,6 +168,7 @@ class IntervueBot():
                 feedback = response_content
 
             rating = rating_str.split('/')[0]
+            # rating = rating_str.split(' ')[2]
             floatrating = float(rating)
             print(floatrating)
             total_rating+=floatrating 

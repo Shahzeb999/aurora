@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,22 +14,45 @@
             flex-direction: column;
             align-items: center;
         }
-        
-        #questionSection, #evaluationSection {
+
+        #uploadSection,
+        #questionSection,
+        #evaluationSection {
             margin-top: 20px;
+            text-align: center;
         }
-        
+
+        #resumeInput,
+        #domainInput {
+            margin-bottom: 10px;
+        }
+
         textarea {
             width: 300px;
             height: 100px;
             margin-top: 10px;
+            resize: none;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
+
 <body>
     <div id="uploadSection">
-        <input type="file" id="resumeInput" accept=".pdf"/>
-        <input type="text" id="domainInput" placeholder="Enter Domain"/>
+        <input type="file" id="resumeInput" accept=".pdf" />
+        <input type="text" id="domainInput" placeholder="Enter Domain" />
         <button onclick="uploadResume()">Upload Resume</button>
     </div>
 
@@ -44,86 +68,128 @@
 
     <script>
         let currentQuestion = 0;
-        let questions = [];
+        let resume_questions = [];
+        let tech_questions = [];
         let answers = [];
-    
+        let feedbacks = {}; // Declare the feedbacks object
+        let res_val = 0;
+        const formData = new FormData();
+
         function uploadResume() {
             const resumeInput = document.getElementById('resumeInput');
             const domainInput = document.getElementById('domainInput');
-    
+
             if (resumeInput.files.length == 0 || domainInput.value === "") {
                 alert("Please select a resume and enter a domain.");
                 return;
             }
-    
-            const formData = new FormData();
+
             formData.append('resume', resumeInput.files[0]);
             formData.append('domain', domainInput.value);
-    
+
             fetch('/generate_resume_questions', {
                 method: 'POST',
                 body: formData,
             })
-            .then(response => response.json())
-            .then(data => {
-                questions = data.questions;
-                document.getElementById('uploadSection').style.display = 'none';
-                document.getElementById('questionSection').style.display = 'block';
-                displayQuestion();
-            })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => {
+                    resume_questions = data.questions;
+                    document.getElementById('uploadSection').style.display = 'none';
+                    document.getElementById('questionSection').style.display = 'block';
+                    displayQuestion();
+                })
+                .catch(error => console.error('Error:', error));
         }
-    
+
         function displayQuestion() {
-            if (currentQuestion < questions.length) {
-                document.getElementById('questionText').textContent = questions[currentQuestion];
+            if (currentQuestion < resume_questions.length) {
+                document.getElementById('questionText').textContent = resume_questions[currentQuestion];
             } else {
                 submitAnswers();
             }
         }
-    
+
         function submitAnswer() {
             const answerInput = document.getElementById('answerInput');
             answers.push(answerInput.value);
             answerInput.value = ''; // Clear the textarea
             currentQuestion++;
-            displayQuestion();
+            if (res_val == 0) {
+                displayQuestion();
+            }
+            else {
+                displayTechQuestion()
+            }
+
         }
-    
+
         function submitAnswers() {
+            res_val = 1;
             document.getElementById('questionSection').style.display = 'none';
-    
+
             fetch('/validate_resume_responses', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({questions: questions, answers: answers}),
+                body: JSON.stringify({ questions: resume_questions, answers: answers }),
             })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('evaluationSection').style.display = 'block';
-                const evaluationText = document.getElementById('evaluationText');
-                // Clear previous content
-                evaluationText.innerHTML = '';
-    
-                // Display average rating
-                const ratingPara = document.createElement('p');
-                ratingPara.textContent = `Average Rating: ${data.average_rating}`;
-                evaluationText.appendChild(ratingPara);
-    
-                // Display feedbacks
-                const feedbackList = document.createElement('ul');
-                data.feedbacks.forEach(feedback => {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = feedback;
-                    feedbackList.appendChild(listItem);
-                });
-                evaluationText.appendChild(feedbackList);
+                .then(response => response.json())
+                .then(data => {
+                    feedbacks.resume_feedbacks = data.feedbacks; // Save feedbacks
+                    feedbacks.resume_score = data.average_rating;
+                    // Instead of displaying feedbacks, move on to generating tech questions
+                    generateTechnicalQuestions();
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function generateTechnicalQuestions() {
+            fetch('/generate_tech_questions', {
+                method: 'POST',
+                body: formData,
             })
-            .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(data => {
+                    tech_questions = data.questions;
+                    document.getElementById('evaluationSection').style.display = 'none'; // Hide evaluation section
+                    document.getElementById('questionSection').style.display = 'block'; // Display tech questions section
+                    currentQuestion = 0; // Reset current question index
+                    displayTechQuestion(); // Display first tech question
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function displayTechQuestion() {
+            if (currentQuestion < tech_questions.length) {
+                document.getElementById('questionText').textContent = tech_questions[currentQuestion];
+            } else {
+                // All tech questions answered, move on to tech feedback
+                submitTechAnswers();
+            }
+        }
+
+        function submitTechAnswers() {
+            document.getElementById('questionSection').style.display = 'none';
+
+            fetch('/validate_technical_responses', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ questions: tech_questions, answers: answers }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    feedbacks.tech_feedbacks = data.feedbacks;
+                    feedbacks.tech_score = data.average_rating; // Corrected assignment
+                    // Process feedback or move on to next steps
+                })
+                .catch(error => console.error('Error:', error));
         }
     </script>
-    
+
+
 </body>
+
 </html>
