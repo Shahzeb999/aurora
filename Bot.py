@@ -119,6 +119,7 @@ class IntervueBot():
                                     1. you need to seperate each question with the help of delimiter \n so that I can segregate the questions into a list.
                                     2. the questions need to be strictly technical like related to the technologies, techniques, concepts the person have used in their projects, work experience, etc. 
                                     3. the questions need to be strictly related to the domain of the person. 
+                                    4. just give me the questions without any indexing, text with it like Question 1. , etc. I want only questions.
                                     
                                 '''),
                     ("user", "{resume_text}")
@@ -175,8 +176,55 @@ class IntervueBot():
             feedbacks.append(feedback)
         avg_rating = total_rating/(len(questions))
         return {"average_rating": avg_rating, "feedbacks" : feedbacks}
-        
+    
+    def provide_feedback(self, ): 
+        resume_feedback_template = ChatPromptTemplate.from_messages([
+            ("system", f'''
+                        You are a world renowned resume reviewer, you are given a resume of a person belonging/applying  to work in the {self.domain} domain. Your task is to provide him constructive feedbacks about his resume, highlighting any errors, mistakes, unprofessional things, anything not resonating with his resume. Also, complement him about the good things in his resume, like if the structure is good and the content is good then mention about that and so on.
 
+                        **Note : 
+                        1. Just provide the feedback and do not include any extra text in the response. 
+                        2. The feedbacks should be constructive. 
+                        3. The feedback should be based on the fact the the resume is of a person who is working / wants to work in the  {self.domain}. So the resume should be relevant to this field. Include the feedback on the basis of relevancy to the domain also. 
+
+                        4. Make sure to seperate the different feedbacks with the help of \n delimiter, as I want to segregate them and make a list of them.
+                        5. Follow all the above guidelines while providing the feedback. 
+
+             '''      
+            ),
+            ("user", "{input}")
+        ])
+        resume_feedback_chain = resume_feedback_template | self.llm
+        resume_feedback_generated = resume_feedback_chain.invoke({"input": f"{self.resume_text}"}).content
+        resume_feedbacks = resume_feedback_generated.split('\n')
+        resume_feedbacks_list = [f for f in resume_feedbacks if f.strip()]
+        return {"feedbacks":resume_feedbacks_list}
+
+    def generate_summary_about_candidate(self, tech_score, resume_score, tech_feedbacks, resume_feedbacks):
+        summary_template = ChatPromptTemplate.from_messages([
+            ("system", f'''You are a world class hiring professional, your team has recently interviewed a candidate and they have provided the following feedback about the candidate, it contains his score on the basis of his resume, on the basis of his technical proficiency, and his feedbacks on the type of answers that he gave. Your task is to provide a summary based on these scores and feedback in 3-4 lines highlighting the candidates, strength, weakness, expertise, etc.
+              
+            Given the feedback from your hiring team about the candidate:\n\n
+                        f"His technical Score: {tech_score}\n
+                        f"His resume Score: {resume_score}\n
+                        "his response feedbacks on technical questions:\n{tech_feedbacks}\n
+                        "his responce feedbacks on resume questions:\n{resume_feedbacks}
+            **Note :
+            1. provide the summary only and do not include any extra unnecessary text. 
+            2. Ensure that the summary you are providing is not more than 4 lines. 
+            3. follow the above guidelines strictly.  
+            4. if the scores are very less, provide a strongly negative summary. 
+            5. there is no need to be polite if the feedbacks and the scores are not good. 
+            '''
+            ),
+            ("user", "{input}")
+        ])
+        summary_chain = summary_template | self.llm
+        summary_generated = summary_chain.invoke({"input": f"{self.resume_text}"}).content
+        return {"feedbacks":summary_generated}
+
+
+  
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from langchain_openai import OpenAIEmbeddings

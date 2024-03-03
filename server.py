@@ -22,6 +22,13 @@ def upload_resume():
 def hello():
     return render_template('index.html')
 
+<<<<<<< HEAD
+=======
+@app.route('/demo')
+def demo():
+    return render_template('demo.html')
+
+>>>>>>> 91239231bb296bd8fe49e8dfdbbc365c682c38ee
 @app.route('/generate_speech', methods=['POST'])
 def generate_speech():
     print("Generate Speech called")
@@ -91,6 +98,40 @@ def validate_technical_responses():
     
     results = bot.validate_technical_answers(questions,answers)
     return jsonify(results)
+
+@app.route('/review_resume', methods = ['POST'])
+def review_resume(): 
+    if 'resume' not in request.files:
+        return jsonify({"error": "No resume file provided"}), 400
+    file = request.files['resume']
+    domain = request.form.get('domain', 'default_domain')
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+    
+    # Use tempfile to get the temporary directory
+    temp_dir = tempfile.gettempdir()
+    filename = secure_filename(file.filename)
+    file_path = os.path.join(temp_dir, filename)  # Cross-platform path handling
+    file.save(file_path)
+
+    global bot
+    bot = IntervueBot(file_path, domain)
+    feedback = bot.provide_feedback()
+    return jsonify(feedback)
+
+@app.route('/provide_summary_about_the_interview', methods = ['POST'])
+def provide_summary(): 
+    data = request.get_json()
+    if not data : 
+        return "No JSON data found", 400
+    tech_score = data['tech_score']
+    resume_score = data['resume_score']
+    tech_feedbacks = data['tech_feedbacks']
+    resume_feedback = data['resume_feedbacks']
+    summary = bot.generate_summary_about_candidate(tech_score, resume_score, tech_feedbacks, resume_feedback)
+    return jsonify(summary)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
