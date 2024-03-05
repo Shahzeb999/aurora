@@ -3,10 +3,9 @@ import { motion } from "framer-motion";
 import { Box, Flex, Text, Image, Button, FormControl, FormLabel, Input, Checkbox } from "@chakra-ui/react";
 import { PrimaryButton } from "../components/Buttons";
 import aurora from "../assets/projects/aurora.png";
-import { Body, Heading1, Heading2, Heading3 } from "../components/Typography";
 import useColorSwitcher from "../utils/useColorSwitcher";
 
-const Work = () => {
+const ReviewCV = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const { colorDark } = useColorSwitcher();
 
@@ -23,6 +22,16 @@ const Work = () => {
     event.preventDefault();
     if (selectedFile) {
       console.log('File submitted:', selectedFile);
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const age = document.getElementById('age').value;
+      const sex = document.getElementById('sex').value;
+      
+      // Append data to the Info file
+      const Info = [];
+      Info.push({ name, email,phone, age, sex });
+      console.log('Data submitted:', Info);
     }
   };
 
@@ -54,23 +63,30 @@ const Work = () => {
               <FormControl>
                 <FormLabel>Name</FormLabel>
                 <Input type="text" placeholder="Enter your name" mb={3} />
+                <FormLabel>Email address</FormLabel>
+                <Input type="email" placeholder="Enter your email" mb={3} />
+                <FormLabel>Phone Number</FormLabel>
+                <Input type="phone" placeholder="Enter your Phone Number" mb={3} />
                 <FormLabel>Age</FormLabel>
                 <Input type="number" placeholder="Enter your age" mb={3} />
                 <FormLabel>Sex</FormLabel>
                 <Input type="text" placeholder="Enter your gender" mb={3} />
-                <FormLabel>Email address</FormLabel>
-                <Input type="email" placeholder="Enter your email" mb={3} />
+                
                 <Checkbox defaultChecked mb={3}>Check me out</Checkbox>
-                <Button colorScheme="blue" mr={3}>Submit</Button>
               </FormControl>
               <PrimaryButton>
                 <label htmlFor="file-upload" className="custom-file-upload">
-                  Upload your resume
+                  Upload resume
                   <input id="file-upload" type="file" accept=".pdf" onChange={handleFileChange} style={{ display: 'none' }} />
                 </label>
               </PrimaryButton>
               {selectedFile && <Text mt={2}>File ready to be submitted: {selectedFile.name}</Text>}
-            </Flex>
+              </Flex>
+              <br/>
+              <Flex justify="center">
+                <Button colorScheme="blue" mr={3} onClick={handleSubmit}>Submit</Button>
+                  </Flex>
+            
           </Box>
           <Flex
             width={{ lg: "20rem", xl: "30rem" }}
@@ -88,4 +104,4 @@ const Work = () => {
   );
 };
 
-export default Work;
+export default ReviewCV;

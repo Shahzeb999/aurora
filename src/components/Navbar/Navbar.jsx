@@ -30,8 +30,8 @@ const Navbar = props => {
       link: "",
     },
     {
-      name: "Work",
-      link: "work",
+      name: "Review CV",
+      link: "reviewcv",
     },
     {
       name : "Demo",

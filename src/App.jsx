@@ -6,7 +6,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import Homepage from "./pages/Homepage";
 import Team from "./pages/Team";
 import Demo from "./pages/Demo";
-import Work from "./pages/Work";
+import ReviewCV from "./pages/ReviewCV";
 import Navbar from "./components/Navbar/Navbar";
 
 const AnimatedRoutes = () => {
@@ -18,7 +18,7 @@ const AnimatedRoutes = () => {
         <Route path="/" element={<Homepage />} />
         <Route path="/team" element={<Team/>}/>
         <Route path="/demo" element={<Demo/>} />
-        <Route path="/work" element={<Work/>}/>
+        <Route path="/reviewcv" element={<ReviewCV/>}/>
       </Routes>
     </AnimatePresence>
   );

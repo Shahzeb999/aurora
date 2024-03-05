@@ -169,3 +169,7 @@ h1 {
 .extra-content ul.highlight {
   background-color: #f9f9f9;
 }
+
+#roundIndicator {
+  font-weight: bold;
+}
