@@ -14,7 +14,7 @@ Aurora.AI revolutionizes the hiring process by leveraging cutting-edge artificia
 
 ## The Team
 
-### Nawab Shahzeb Uddin
+**Nawab Shahzeb Uddin**
 
 With expertise in Machine Learning and AI integration, Nawab Shahzeb Uddin played a crucial role in integrating the core functionalities of Aurora.AI with the frontend.
 
@@ -23,14 +23,14 @@ With expertise in Machine Learning and AI integration, Nawab Shahzeb Uddin playe
 
 
 
-### Mohammad Adnaan 
+**Mohammad Adnaan**
 
 with expertise in web and app development, Mohd Adnaan played an important role in designing the UI and UX of the web app, bringing it to life. 
 
 - [LinkedIn](https://www.linkedin.com/in/mohammad-adnaan-51272024a/)
 - [GitHub](https://github.com/mohd-adnaan)
 
-### Mohd Rehan
+**Mohd Rehan**
 
 Mohd Rehan is a Machine Learning and Deep Learning professional with proficiency in designing AI systems, he designed the bots for various aspects of the app and ensured their proper functionality. 
 
@@ -48,11 +48,37 @@ Interested in exploring Aurora.AI? Here's how you can get started:
    git clone https://github.com/path-to-aurora-ai-repo.git
    ```
 
-2. **Dependencies**
+2. **Install Python Packages**
 
    ```bash
      pip install -r requirements.txt
    ```
+3. **Install Node Packages**
+   ```bash
+      npm install 
+   ```
+4. **Set the Flask server**
+   ```
+   $env:FLASK_APP = "server.py"
+   ```
+5. **Start the Flask Server**
+   ```
+   flask run 
+   ```
+6. **Start the Node Server**
+   ```
+   npm start
+   ```
+
+# License 
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+
+# Extras
+
+Aurora is a closed source project that was initiated as a part of a Hackathon @ AMU, is now under development to convert it into a full fledged interview and hiring platform. 
+
+
 
 
 
