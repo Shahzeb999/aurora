@@ -638,7 +638,6 @@ const Homepage = () => {
             display={{ base: "none", lg: "block" }}
             mt="0"
           >
-
             <Canvas style={{ height: '100vh' }}>
               <ambientLight />
               <OrbitControls enableZoom={false} />
@@ -754,6 +753,10 @@ const Frameworks = () => {
       />}
       {<IconBox
         icon={INTC}
+        size={{ base: "3em", xl: "5.5em" }}
+      />}
+      {<IconBox
+        icon={ASML}
         size={{ base: "3em", xl: "5.5em" }}
       />}
 
