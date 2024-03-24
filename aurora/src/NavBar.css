@@ -1,0 +1,70 @@
+/* NavBar.css */
+.navbar {
+    width: 250px; /* Adjust the width as per your layout */
+    background-color: #f4f4f4; /* Your desired sidebar background color */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+    padding: 1rem;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .logo {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  .logo img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  .nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .nav-links li {
+    margin-bottom: 1rem;
+  }
+  
+  .nav-links li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .nav-footer {
+    font-size: 0.8rem;
+  }
+  
+  .resources span {
+    font-weight: bold;
+  }
+  
+  .resources ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .resources ul li a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  
+  .copy-right {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  /* Add more styling based on your design specifics */
+  .navbar hr {
+    border: 0; /* Removes the default border */
+    height: 2px; /* Sets the height of the line */
+    background-image: linear-gradient(to right, #0f0c29, #302b63, #24243e); /* Gradient line to match the navbar gradient */
+    margin: 20px 0; /* Adds some spacing above and below the line */
+  }

@@ -1,0 +1,147 @@
+/* HomePage.css */
+.homepage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: top; /* This will vertically center all children in the .homepage container */
+
+  flex-grow: 1; /* Fill the remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+  background-color: #f0f0f0;
+  overflow: auto; /* Scroll if content is larger than the screen */
+  padding: 20px;
+  /* margin-left: 250px; Offset by the navbar's width */
+  width: calc(100% - 250px); /* Take up the rest of the width */
+}
+
+.main-content {
+display: flex;
+flex-direction: column;
+/* align-items: center; */
+justify-content: center; /* Center vertically */
+text-align: center;
+/* width: 100%; Use the full width available within its parent */
+}
+
+
+.title {
+  font-size: 3rem; /* Bigger for emphasis */
+  color: #004e92; /* Dark blue for a strong, readable title */
+  font-weight: 300; /* Lighter font-weight for a more modern look */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* A more modern font */
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.login-button,
+.explore-button {
+  padding: 0.75rem 2rem; /* Slightly larger padding for a bigger button */
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 20px; /* Rounded borders for a softer look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transition for interaction */
+}
+
+.login-button:hover,
+.explore-button:hover {
+  transform: translateY(-2px); /* Slight lift when button is hovered */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover for a "pop" effect */
+}
+
+.login-button {
+  background-color: #00a1e1; /* A vibrant blue that stands out */
+}
+
+.explore-button {
+  background-color: #32c787; /* A fresh, vibrant green */
+}
+
+.features-section {
+  padding: 1rem;
+  width: 90%;
+  background-color: #e8f8f5; /* Very light green for a refreshing background */
+  border-radius: 8px; /* Rounded corners for the section */
+  margin: 2rem 0; /* Add space around the section */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.features-title {
+  font-size: 2rem;
+  color: #004e92; /* Dark blue to stay consistent with the title */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin-bottom: 1rem; /* Adjust spacing */
+}
+
+.features-subtitle {
+  color: #00766c; /* A darker shade of green for contrast */
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.features-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.feature-button {
+  padding: 1rem 2rem;
+  background-color: #00a1e1; /* Same vibrant blue as the login button */
+  color: white;
+  cursor: pointer;
+  width: 90%; /* Adjust width as necessary */
+  border-radius: 40px;
+  transition: background-color 0.2s ease, transform 0.2s ease; /* Smooth transition for interaction */
+}
+
+.feature-button:hover {
+  background-color: #008db9; /* A slightly darker blue for hover state */
+  transform: translateY(-2px); /* Slight lift when button is hovered */
+}
+/* CTA Section Styles */
+.cta-section {
+  background-color: #1a76ca; /* Use a theme color that stands out, yet is consistent with the navbar gradient */
+  text-align: center; /* Center the text and button */
+  padding: 2rem; /* Add some padding for spacing */
+  border-radius: 8px; /* Optional: round the corners for a smoother look */
+  margin: 4rem 0; /* Add some top and bottom margin for separation from other content */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.cta-title {
+  color: #ffffff; /* White text stands out against the blue background */
+  font-size: 2.5rem; /* Make the title larger to draw attention */
+  margin-bottom: 1rem; /* Space before the button */
+  font-weight: bold; /* Make the font bold */
+}
+
+.cta-button {
+  font-size: 1.2rem; /* Larger font size for the button text */
+  padding: 1rem 2rem; /* Generous padding for a larger, more clickable button */
+  color: #1a76ca; /* The button text color could be the same as the section background for brand consistency */
+  background-color: #ffffff; /* White button to stand out against the blue */
+  border: none; /* Remove default border */
+  border-radius: 30px; /* Highly rounded borders for a modern pill shape */
+  cursor: pointer; /* Change cursor to pointer to indicate the button is clickable */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+  transition: all 0.3s ease; /* Transition for smooth hover effects */
+}
+
+.cta-button:hover {
+  background-color: #e8f8f5; /* Lighten the button on hover for an interactive effect */
+  color: #0b3d91; /* Change text color on hover to a darker blue */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Deeper shadow for a "lifted" effect */
+}
