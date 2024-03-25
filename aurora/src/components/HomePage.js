@@ -87,7 +87,16 @@ const HomePage = () => {
       >
         <h2 className="testimonials-title">Success Stories</h2>
         <p className="testimonials-subtitle">Hear from those who've excelled with Aurora</p>
-        {/* Testimonial cards or quotes would go here */}
+        <div className="testimonial-cards">
+          <div className="testimonial-card">
+            <h3>Nawab Shahzeb Uddin</h3>
+            <p>"Aurora helped me land my dream job! The AI interviews were incredibly realistic and prepared me well."</p>
+          </div>
+          <div className="testimonial-card">
+            <h3>Rehan Haider</h3>
+            <p>"The Resume Reviewer was a game-changer. I received valuable feedback that made my resume stand out."</p>
+          </div>
+        </div>
       </motion.section>
 
       {/* FAQ/Help Center Section */}
@@ -98,7 +107,20 @@ const HomePage = () => {
         transition={{ delay: 1, duration: 0.8 }}
       >
         <h2 className="faq-title">Frequently Asked Questions</h2>
-        {/* FAQ items would go here */}
+        <div className="faq-list">
+          <div className="faq-item">
+            <h3>How does the AI Interview feature work?</h3>
+            <p>The AI Interview simulates a real interview scenario based on your selected industry and role. It provides instant feedback on your answers.</p>
+          </div>
+          <div className="faq-item">
+            <h3>Is my data secure with Aurora?</h3>
+            <p>Yes, we take data security seriously. Your information is encrypted and protected according to industry standards.</p>
+          </div>
+          <div className="faq-item">
+            <h3>Can I cancel my subscription anytime?</h3>
+            <p>Absolutely! You can cancel your subscription at any time without any hidden fees.</p>
+          </div>
+        </div>
       </motion.section>
 
       {/* Blog/Resource Center Section */}
@@ -110,11 +132,20 @@ const HomePage = () => {
       >
         <h2 className="blog-title">Resources & Insights</h2>
         <p className="blog-subtitle">Read our latest articles, tips, and industry insights</p>
-        {/* Links to blog articles or resource thumbnails would go here */}
+        <div className="blog-posts">
+          <div className="blog-post">
+            <h3>Top 5 Interview Tips</h3>
+            <p>Learn the best strategies to ace your next interview with these valuable tips.</p>
+          </div>
+          <div className="blog-post">
+            <h3>How to Prepare for Technical Interviews</h3>
+            <p>Technical interviews can be daunting. Here's how to effectively prepare and succeed.</p>
+          </div>
+        </div>
       </motion.section>
 
-      {/* Contact/Support Section */}
-      <motion.section
+            {/* Contact/Support Section */}
+            <motion.section
         className="contact-section"
         initial={{ y: 30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -122,17 +153,32 @@ const HomePage = () => {
       >
         <h2 className="contact-title">Get in Touch</h2>
         <p className="contact-subtitle">Need help or have questions? Our team is here for you.</p>
-        {/* Contact form or details would go here */}
+        <div className="contact-info">
+          <p>Email: contact@aurora.com</p>
+          <p>Phone: 123-456-7890</p>
+        </div>
+        <div className="contact-form">
+          {/* Contact form component would go here */}
+          <form>
+            <div className="form-group">
+              <label htmlFor="name">Name:</label>
+              <input type="text" id="name" name="name" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="email">Email:</label>
+              <input type="email" id="email" name="email" />
+            </div>
+            <div className="form-group">
+              <label htmlFor="message">Message:</label>
+              <textarea id="message" name="message" rows="4" />
+            </div>
+            <button type="submit">Send</button>
+          </form>
+        </div>
       </motion.section>
-
-      {/* Footer Section */}
-      {/* This typically wouldn't need to be animated */}
-      <footer className="footer">
-        {/* Footer content such as sitemap, legal information, etc. */}
-      </footer>
     </motion.main>
-    
   );
 };
 
 export default HomePage;
+
