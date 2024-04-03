@@ -47,6 +47,7 @@ class IntervueBot():
         generated_resume_questions_list = generated_resume_questions.split('\n')
         cleaned_resume_questions_list = [q for q in generated_resume_questions_list if q.strip()]
         return {"questions":cleaned_resume_questions_list}
+
     
     def validate_response(self, questions ,responses): 
 
@@ -169,7 +170,6 @@ class IntervueBot():
                 feedback = response_content
 
             rating = rating_str.split('/')[0]
-            # rating = rating_str.split(' ')[2]
             floatrating = float(rating)
             print(floatrating)
             total_rating+=floatrating 
