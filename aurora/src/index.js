@@ -4,6 +4,14 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+window.addEventListener('error', (event) => {
+  const { message, filename, lineno, colno, error } = event;
+  if (message === 'ResizeObserver loop completed with undelivered notifications') {
+    event.preventDefault();
+    console.error('ResizeObserver loop error suppressed:', error);
+  }
+});
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

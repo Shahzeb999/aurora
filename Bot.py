@@ -224,7 +224,6 @@ class IntervueBot():
         return {"feedbacks":summary_generated}
 
 
-  
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 from langchain_openai import OpenAIEmbeddings

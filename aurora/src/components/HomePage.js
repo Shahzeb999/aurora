@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import '../HomePage.css'; // Ensure this CSS file path is correct
+import { useNavigate } from 'react-router-dom'; // Importing useNavigate
+import '../HomePage.css';
 
 const FeatureButton = ({ text }) => (
   <motion.button
@@ -13,6 +14,16 @@ const FeatureButton = ({ text }) => (
 );
 
 const HomePage = () => {
+  const navigate = useNavigate(); // Using useNavigate
+
+  const handleNavigateToInterview = () => {
+    navigate('/interview'); // Navigating to '/interview' route
+  };
+
+  const handleNavigateToSignUP = () => {
+    navigate('/SignUp'); // Navigating to '/interview' route
+  };
+
   return (
     <motion.main
       className="homepage"
@@ -27,12 +38,12 @@ const HomePage = () => {
         transition={{ delay: 0.2, duration: 0.8 }}
       >
         <h1 className="title">Your A.I Powered Career Companion</h1>
-        <p className="hero-subtitle">Elevate your interview skills with the power of artificial intelligence. Practice anytime, anywhere, with instant feedback to improve your chances of landing your dream job.</p>
         <div className="button-container">
           <motion.button
             className="login-button"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
+            onClick={handleNavigateToSignUP}
           >
             Login / Sign up
           </motion.button>
@@ -53,7 +64,7 @@ const HomePage = () => {
         transition={{ delay: 0.4, duration: 0.8 }}
       >
         <h2 className="features-title">Features</h2>
-        <p className="features-subtitle">Discover how Aurora can guide you towards interview mastery:</p>
+        <p className="features-subtitle">Explore the range of suites...</p>
         <div className="features-list">
           <FeatureButton text="AI Interviews" />
           <p className="feature-description">Engage with an AI interviewer that adapts to your industry and role, providing realistic interview scenarios.</p>
@@ -75,6 +86,7 @@ const HomePage = () => {
           className="cta-button"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={handleNavigateToInterview} // Adding onClick to navigate
         >
           Get Started with Aurora
         </motion.button>
@@ -182,3 +194,4 @@ const HomePage = () => {
 
 export default HomePage;
 
+      

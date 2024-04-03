@@ -1,0 +1,78 @@
+/* InterviewPage.css */
+.interview-container {
+  max-width: 800px;
+  margin: 40px auto;
+  margin-right: 200px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding-left: 20px; /* Adjust as needed */
+  padding-right: 20px; /* Adjust as needed */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.interview-container h3 {
+  font-size: 1.5rem;
+  color: #004e92;
+  margin-bottom: 20px;
+}
+
+.interview-container input[type='text'],
+.interview-container input[type='email'],
+.interview-container input[type='file'],
+.interview-container textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  
+
+}
+
+.interview-container button {
+  background-color: #004e92;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  
+}
+
+.interview-container button:hover {
+  background-color: #003366;
+}
+
+.interview-container .videoSection,
+.interview-container .questionSection,
+.interview-container .evaluationSection {
+  margin-top: 20px;
+  display: none; /* Initially hidden */
+}
+
+.interview-container textarea {
+  height: 150px;
+  resize: vertical;
+}
+
+@media (max-width: 768px) {
+  .interview-container {
+    padding: 10px;
+    margin: 20px auto; /* Adjust margin for smaller screens */
+  }
+
+  .interview-container h3 {
+    font-size: 1.3rem;
+  }
+}
+
+.videoSection video {
+  max-width: 100%;
+  height: auto;
+  max-height: 400px; /* Adjust the height as needed */
+}

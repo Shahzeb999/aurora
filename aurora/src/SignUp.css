@@ -1,0 +1,77 @@
+/* SignUp.css */
+
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    padding-left: 280px; /* Shift rightwards by 280px */
+    width: 100vw; /* Ensure full viewport width */
+    min-height: 100vh; /* Minimum height to cover entire viewport */
+  }
+  
+  .signup-container h2 {
+    margin-bottom: 20px;
+    color: #004e92; /* Change color to a dark blue */
+  }
+  
+  .signup-container form {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .signup-container label {
+    margin-bottom: 10px;
+    color: #333; /* Darken label color */
+  }
+  
+  .signup-container input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+  
+  .signup-container button {
+    padding: 10px;
+    background-color: #00766c; /* Green color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+  }
+  
+  .signup-container button:hover {
+    background-color: #005a4b; /* Darker green on hover */
+  }
+  
+  .error-message {
+    color: red;
+    margin-bottom: 10px;
+  }
+  
+  .signup-container .note {
+    text-align: center;
+    margin-top: 20px;
+    color: #777;
+  }
+  
+  .signup-container .note a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .signup-container .note a:hover {
+    text-decoration: underline;
+  }
+  

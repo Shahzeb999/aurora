@@ -1,123 +1,122 @@
 /* Resetting default margins and paddings */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%; /* Ensure full viewport height is used */
-    font-family: Arial, sans-serif; /* Example font, replace with your choice */
-  }
-  
-  /* Flex container to hold the navbar and homepage content side by side */
-  .app-container {
-    display: flex;
-    min-height: 100vh; /* Use full viewport height */
-    width: 100%; /* Ensure it spans the full viewport width */
-  }
-  
-  
-  /* Styling for the Navbar #0b3d91*/
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Ensure full viewport height is used */
+  font-family: Arial, sans-serif; /* Example font, replace with your choice */
+}
 
+/* Flex container to hold the navbar and homepage content side by side */
+.app-container {
+  display: flex;
+  min-height: 100vh; /* Use full viewport height */
+  width: 100%; /* Ensure it spans the full viewport width */
+}
+
+/* Styling for the Navbar */
 .navbar {
-    width: 250px; /* Fixed width for the navbar */
-    background: linear-gradient(to bottom, #00a1e1 , #1864ab, #1a76ca); /* Blue cosmic gradient */
-    display: flex;
-    flex-direction: column; /* Stack items vertically */
-    padding: 20px; /* Padding around navbar content */
-  }
-  
-  
-  /* Logo Styles */
-  .logo {
-    display: flex;
-    flex-direction: column; /* Stack logo image and text vertically */
-    align-items: center; /* Center logo items horizontally */
-    margin-bottom: 20px; /* Space below the logo */
-  }
-  
-  .logo img {
-    width: 100px; /* Adjust the width of the logo image */
-    margin-bottom: 10px; /* Space between logo image and text */
-  }
-  
-  /* Navbar Links Styles */
-  .nav-links,
-  .resources ul,
-  .nav-footer,
-  .nav-footer a {
-    list-style: none;
-    padding: 0;
-    margin: 0; /* Resetting margin for footer to align with nav-links */
-    color: white; /* Ensuring text color is white for all navbar text */
-    text-decoration: none; /* No underlines on links */
-  }
-  
-  .nav-links li,
-  .resources li {
-    margin-bottom: 10px; /* Space between navigation links */
-  }
-  
-  .navbar a,
-  .navbar h2 {
-    color: white; /* White link and heading color for contrast */
-  }
-  
-  .navbar a:hover {
-    color: #ccc; /* Lighter color on hover for better interaction feedback */
-  }
-  
-  .section-title {
-    color: #333; /* Dark text for titles */
-    margin-top: 0;
-    padding-bottom: 10px; /* Space below section titles */
-    border-bottom: 1px solid #ccc; /* Light line under titles for separation */
-  }
-  
-  /* Styles for homepage sections (Features, About, Reviews) */
-  .features-list, .reviews-list {
-    display: flex;
-    flex-direction: column; /* Stack features or reviews vertically */
-    gap: 10px; /* Space between items */
-  }
-  
-  /* Styles for buttons to match the dark blue gradient theme */
+  width: 250px; /* Fixed width for the navbar */
+  background: linear-gradient(to bottom, #00a1e1, #1864ab, #1a76ca); /* Blue cosmic gradient */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  padding: 20px; /* Padding around navbar content */
+}
+
+/* Logo Styles */
+.logo {
+  display: flex;
+  flex-direction: column; /* Stack logo image and text vertically */
+  align-items: center; /* Center logo items horizontally */
+  margin-bottom: 20px; /* Space below the logo */
+}
+
+.logo img {
+  width: 100px; /* Adjust the width of the logo image */
+  margin-bottom: 10px; /* Space between logo image and text */
+}
+
+/* Navbar Links Styles */
+.nav-links,
+.resources ul,
+.nav-footer,
+.nav-footer a {
+  list-style: none;
+  padding: 0;
+  margin: 0; /* Resetting margin for footer to align with nav-links */
+  color: white; /* Ensuring text color is white for all navbar text */
+  text-decoration: none; /* No underlines on links */
+}
+
+.nav-links li,
+.resources li {
+  margin-bottom: 10px; /* Space between navigation links */
+}
+
+.navbar a,
+.navbar h2 {
+  color: white; /* White link and heading color for contrast */
+}
+
+.navbar a:hover {
+  color: #ccc; /* Lighter color on hover for better interaction feedback */
+}
+
+.section-title {
+  color: #333; /* Dark text for titles */
+  margin-top: 0;
+  padding-bottom: 10px; /* Space below section titles */
+  border-bottom: 1px solid #ccc; /* Light line under titles for separation */
+}
+
+/* Styles for homepage sections (Features, About, Reviews) */
+.features-list,
+.reviews-list {
+  display: flex;
+  flex-direction: column; /* Stack features or reviews vertically */
+  gap: 10px; /* Space between items */
+}
+
 /* Styles for buttons to match the new blue gradient theme */
-.feature-button, .review-item {
-    background-color: #1872ab; /* A complementary blue from the navbar gradient */
-    color: white; /* White text for readability and contrast */
-    border: none;
-    padding: 10px;
-    cursor: pointer; /* Pointer cursor on hover */
-    text-align: center;
-    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
-    border-radius: 20px; /* Rounded corners for a softer look */
-  }
-  
-  .feature-button:hover, .review-item:hover {
-    background-color: #145a8d; /* A slightly darker shade for hover states */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adding a shadow for a 3D hover effect */
-  }
-  
-  
-  .review-item {
-    background-color: #fff; /* White background for review items for contrast */
-    color: #333; /* Dark text for readability */
-    border: 1px solid #ccc; /* Subtle border for definition */
-  }
-  
-  .nav-links li a,
-  .resources ul li a,
-  .nav-footer,
-  .nav-footer a { /* Apply the white color to all text within nav-footer */
-    color: white; /* White link color for contrast */
-    text-decoration: none; /* No underlines on links */
-  }
-  
-  .social-media a {
-    margin:20px 5px; /* Adds horizontal spacing between icons */
-  }
-  
-  .social-media svg {
-    width: 15px; /* Increases the size of the icons */
-    height: auto;
-    color: #fff; /* Change the color if needed */
-  }
-  
+.feature-button,
+.review-item {
+  background-color: #1872ab; /* A complementary blue from the navbar gradient */
+  color: white; /* White text for readability and contrast */
+  border: none;
+  padding: 10px;
+  cursor: pointer; /* Pointer cursor on hover */
+  text-align: center;
+  transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+  border-radius: 20px; /* Rounded corners for a softer look */
+}
+
+.feature-button:hover,
+.review-item:hover {
+  background-color: #145a8d; /* A slightly darker shade for hover states */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Adding a shadow for a 3D hover effect */
+}
+
+.review-item {
+  background-color: #fff; /* White background for review items for contrast */
+  color: #333; /* Dark text for readability */
+  border: 1px solid #ccc; /* Subtle border for definition */
+}
+
+.nav-links li a,
+.resources ul li a,
+.nav-footer,
+.nav-footer a {
+  /* Apply the white color to all text within nav-footer */
+  color: white; /* White link color for contrast */
+  text-decoration: none; /* No underlines on links */
+}
+
+.social-media a {
+  margin: 20px 5px; /* Adds horizontal spacing between icons */
+}
+
+.social-media svg {
+  width: 15px; /* Increases the size of the icons */
+  height: auto;
+  color: #fff; /* Change the color if needed */
+}

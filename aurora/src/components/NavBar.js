@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import '../NavBar.css';
+import { Link } from 'react-router-dom';
 import { FaFacebookF, FaTwitter, FaLinkedinIn } from 'react-icons/fa';
+
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -30,7 +32,7 @@ const NavBar = () => {
         </div>
         <hr />
         <ul className="nav-links">
-          <li><a href="#why-aurora">Why Aurora?</a></li>
+          <li><Link to="/why-aurora">Why Aurora?</Link></li>
           <li><a href="#job-search">Job Search</a></li>
           <li><a href="#take-interview">Take Interview</a></li>
         </ul>
